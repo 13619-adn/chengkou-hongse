@@ -106,9 +106,33 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 
 /* 地图 */
 #map-section{padding:60px 0}
-.map-wrap{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:24px;background:linear-gradient(135deg,#e8e0d0,#d4cbb8)}
-.map-svg{width:100%;height:auto}
-.map-info{padding:12px 16px;background:var(--ink);color:#fff;font-size:13px}
+.map-wrap{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-lg);margin-top:24px;background:linear-gradient(135deg,#f0ebe0,#e0d5c0)}
+.map-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.map-tab{padding:8px 16px;border-radius:20px;border:2px solid var(--red);background:transparent;color:var(--red);font-size:13px;cursor:pointer;font-weight:600;transition:.2s}
+.map-tab.active{background:var(--red);color:#fff}
+.map-tab:hover{opacity:.8}
+.map-container{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:#f5f0e8}
+.map-svg{width:100%;height:auto;display:block}
+.map-marker{cursor:pointer;transition:.2s}
+.map-marker:hover{transform:scale(1.15)}
+.map-marker .pulse{animation:mapPulse 2s ease-out infinite;transform-origin:center}
+@keyframes mapPulse{0%{opacity:.8;r:14}100%{opacity:0;r:28}}
+.map-legend{position:absolute;top:12px;right:12px;background:rgba(26,26,26,.88);color:#fff;padding:12px 14px;border-radius:8px;font-size:12px;backdrop-filter:blur(4px);max-width:140px}
+.map-legend .lg-item{display:flex;align-items:center;gap:6px;margin:4px 0}
+.map-legend .lg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.map-detail{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;padding:24px 20px 16px;transform:translateY(100%);transition:.3s;pointer-events:none}
+.map-detail.show{transform:translateY(0);pointer-events:auto}
+.map-detail h4{font-size:16px;margin-bottom:6px;color:#ffdd55}
+.map-detail p{font-size:13px;line-height:1.6;opacity:.9;margin-bottom:8px}
+.map-detail .tag{display:inline-block;padding:2px 8px;background:var(--red);border-radius:10px;font-size:11px;margin-right:4px}
+.map-close{position:absolute;top:8px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.map-close:hover{background:rgba(255,255,255,.4)}
+.map-info{padding:12px 16px;background:var(--ink);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:space-between}
+.map-info .hint{opacity:.7}
+.map-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:16px}
+.map-stat{text-align:center;padding:16px 8px;background:var(--cream);border-radius:var(--radius);border:1px solid rgba(192,33,43,.15)}
+.map-stat .num{font-size:28px;font-weight:800;color:var(--red)}
+.map-stat .label{font-size:12px;color:var(--text-mid);margin-top:4px}
 
 /* 关于 */
 #about{padding:60px 0;text-align:center;background:var(--red-dark);color:#fff}
@@ -787,19 +811,168 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
   <div class="container">
     <span class="sec-tag">DIGITAL MAP</span>
     <h2 class="sec-title">数字地图</h2>
-    <p class="sec-sub">城口红军街红色遗迹分布</p>
-    <div class="map-wrap">
-      <svg class="map-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
-        <rect width="800" height="400" fill="#e8e0d0"/>
-        <path d="M 100 200 Q 300 180 500 200 T 700 200" stroke="#C0212B" stroke-width="4" fill="none" stroke-dasharray="8 4"/>
-        <text x="400" y="180" text-anchor="middle" fill="#7A0F16" font-size="14" font-weight="bold">红军街</text>
-        <circle cx="150" cy="200" r="16" fill="#C0212B"/><text x="150" y="240" text-anchor="middle" fill="#333" font-size="11">标语墙</text>
-        <circle cx="280" cy="200" r="16" fill="#C0212B"/><text x="280" y="240" text-anchor="middle" fill="#333" font-size="11">故居</text>
-        <circle cx="400" cy="200" r="16" fill="#C0212B"/><text x="400" y="240" text-anchor="middle" fill="#333" font-size="11">广兴楼</text>
-        <circle cx="500" cy="200" r="16" fill="#C0212B"/><text x="500" y="240" text-anchor="middle" fill="#333" font-size="11">打铁铺</text>
-        <circle cx="620" cy="200" r="16" fill="#C0212B"/><text x="620" y="240" text-anchor="middle" fill="#333" font-size="11">故城</text>
+    <p class="sec-sub">城口红军街红色遗迹分布 · 9处革命遗址 · 环道约1200米</p>
+
+    <div class="map-stats">
+      <div class="map-stat"><div class="num">9</div><div class="label">革命遗址</div></div>
+      <div class="map-stat"><div class="num">1200m</div><div class="label">红军街环道</div></div>
+      <div class="map-stat"><div class="num">1934</div><div class="label">长征途经</div></div>
+      <div class="map-stat"><div class="num">7</div><div class="label">休整天数</div></div>
+    </div>
+
+    <div class="map-container" style="margin-top:20px">
+      <svg class="map-svg" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#5BA3D0"/><stop offset="100%" stop-color="#3A7CA8"/>
+          </linearGradient>
+          <linearGradient id="landGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#E8DFC8"/><stop offset="100%" stop-color="#D4C8A8"/>
+          </linearGradient>
+          <linearGradient id="museumGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#8B2020"/><stop offset="100%" stop-color="#5A1010"/>
+          </linearGradient>
+          <filter id="markerShadow"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity=".3"/></filter>
+        </defs>
+
+        <rect width="900" height="560" fill="url(#landGrad)"/>
+
+        <text x="20" y="30" fill="#8A7A5A" font-size="11" opacity=".5">城口镇 · 仁化县 · 韶关市</text>
+
+        <path d="M 0 120 Q 200 160 350 140 Q 500 120 650 200 Q 800 280 900 320 L 900 560 L 0 560 Z" fill="url(#riverGrad)" opacity=".85"/>
+        <path d="M 0 120 Q 200 160 350 140 Q 500 120 650 200 Q 800 280 900 320" fill="none" stroke="#2A5A7A" stroke-width="2" opacity=".4"/>
+        <text x="250" y="175" fill="#fff" font-size="13" font-weight="bold" opacity=".7" transform="rotate(-8,250,170)">九龙江</text>
+
+        <rect x="560" y="40" width="320" height="100" fill="url(#museumGrad)" rx="6" opacity=".92"/>
+        <text x="720" y="72" text-anchor="middle" fill="#FFD700" font-size="14" font-weight="bold">红军长征粤北纪念馆</text>
+        <text x="720" y="90" text-anchor="middle" fill="#fff" font-size="11" opacity=".8">广东省唯一以红军长征为主题的纪念馆</text>
+        <text x="720" y="106" text-anchor="middle" fill="#fff" font-size="10" opacity=".6">与红军街隔河相望</text>
+
+        <rect x="580" y="115" width="200" height="40" fill="#6A1818" rx="4"/>
+        <text x="680" y="140" text-anchor="middle" fill="#fff" font-size="11">纪念馆广场</text>
+
+        <line x1="380" y1="150" x2="440" y2="180" stroke="#888" stroke-width="6" stroke-linecap="round"/>
+        <text x="410" y="145" text-anchor="middle" fill="#666" font-size="10">水东桥</text>
+
+        <path d="M 120 220 Q 200 200 280 210 Q 380 225 480 215 Q 580 205 680 230 Q 780 250 850 245" fill="none" stroke="#B8975A" stroke-width="14" stroke-linecap="round" opacity=".7"/>
+        <path d="M 120 220 Q 200 200 280 210 Q 380 225 480 215 Q 580 205 680 230 Q 780 250 850 245" fill="none" stroke="#D4B870" stroke-width="10" stroke-linecap="round"/>
+        <path d="M 120 220 Q 200 200 280 210 Q 380 225 480 215 Q 580 205 680 230 Q 780 250 850 245" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="4 4" opacity=".4"/>
+
+        <path d="M 90 270 Q 150 260 220 270 Q 300 285 380 275 Q 460 265 540 280 Q 620 295 700 290" fill="none" stroke="#A8855A" stroke-width="10" stroke-linecap="round" opacity=".5"/>
+        <path d="M 160 320 Q 250 310 340 320 Q 430 330 520 325 Q 600 320 680 330" fill="none" stroke="#A8855A" stroke-width="8" stroke-linecap="round" opacity=".4"/>
+
+        <text x="240" y="207" fill="#7A5A2A" font-size="11" font-weight="bold">河 边 街</text>
+        <text x="460" y="222" fill="#7A5A2A" font-size="11" font-weight="bold">正 龙 街</text>
+        <text x="700" y="247" fill="#7A5A2A" font-size="11" font-weight="bold">紫 霞 街</text>
+
+        <g class="map-marker" data-site="guqincheng" onclick="showMapDetail('guqincheng')">
+          <circle class="pulse" cx="140" cy="220" r="14" fill="#C0212B" opacity=".5"/>
+          <circle cx="140" cy="220" r="10" fill="#C0212B" filter="url(#markerShadow)"/>
+          <text x="140" y="225" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">1</text>
+          <text x="140" y="250" text-anchor="middle" fill="#5A3A1A" font-size="11" font-weight="600">古秦城</text>
+          <text x="140" y="262" text-anchor="middle" fill="#8A6A4A" font-size="9">红五军宿营地</text>
+        </g>
+        <g class="map-marker" data-site="lifadian" onclick="showMapDetail('lifadian')">
+          <circle class="pulse" cx="260" cy="210" r="14" fill="#C0212B" opacity=".5"/>
+          <circle cx="260" cy="210" r="10" fill="#C0212B" filter="url(#markerShadow)"/>
+          <text x="260" y="215" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">2</text>
+          <text x="260" y="190" text-anchor="middle" fill="#5A3A1A" font-size="11" font-weight="600">胜一理发店</text>
+          <text x="260" y="178" text-anchor="middle" fill="#8A6A4A" font-size="9">秘密联络站</text>
+        </g>
+        <g class="map-marker" data-site="datiepu" onclick="showMapDetail('datiepu')">
+          <circle class="pulse" cx="330" cy="213" r="14" fill="#C0212B" opacity=".5"/>
+          <circle cx="330" cy="213" r="10" fill="#C0212B" filter="url(#markerShadow)"/>
+          <text x="330" y="218" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">3</text>
+          <text x="330" y="243" text-anchor="middle" fill="#5A3A1A" font-size="11" font-weight="600">打铁铺</text>
+          <text x="330" y="255" text-anchor="middle" fill="#8A6A4A" font-size="9">地下交通站</text>
+        </g>
+        <g class="map-marker" data-site="guangxinglou" onclick="showMapDetail('guangxinglou')">
+          <circle class="pulse" cx="440" cy="217" r="14" fill="#C0212B" opacity=".5"/>
+          <circle cx="440" cy="217" r="10" fill="#C0212B" filter="url(#markerShadow)"/>
+          <text x="440" y="222" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">4</text>
+          <text x="440" y="198" text-anchor="middle" fill="#5A3A1A" font-size="11" font-weight="600">广兴栈</text>
+          <text x="440" y="186" text-anchor="middle" fill="#8A6A4A" font-size="9">毛泽东旧居</text>
+        </g>
+        <g class="map-marker" data-site="sanjiaoping" onclick="showMapDetail('sanjiaoping')">
+          <circle class="pulse" cx="540" cy="213" r="14" fill="#C0212B" opacity=".5"/>
+          <circle cx="540" cy="213" r="10" fill="#C0212B" filter="url(#markerShadow)"/>
+          <text x="540" y="218" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">5</text>
+          <text x="540" y="243" text-anchor="middle" fill="#5A3A1A" font-size="11" font-weight="600">三角坪</text>
+          <text x="540" y="255" text-anchor="middle" fill="#8A6A4A" font-size="9">红五军惩恶遗址</text>
+        </g>
+        <g class="map-marker" data-site="tanfuren" onclick="showMapDetail('tanfuren')">
+          <circle class="pulse" cx="630" cy="232" r="14" fill="#C0212B" opacity=".5"/>
+          <circle cx="630" cy="232" r="10" fill="#C0212B" filter="url(#markerShadow)"/>
+          <text x="630" y="237" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">6</text>
+          <text x="630" y="212" text-anchor="middle" fill="#5A3A1A" font-size="11" font-weight="600">谭甫仁旧居</text>
+          <text x="630" y="200" text-anchor="middle" fill="#8A6A4A" font-size="9">开国中将</text>
+        </g>
+        <g class="map-marker" data-site="jincheng" onclick="showMapDetail('jincheng')">
+          <circle class="pulse" cx="720" cy="245" r="14" fill="#C0212B" opacity=".5"/>
+          <circle cx="720" cy="245" r="10" fill="#C0212B" filter="url(#markerShadow)"/>
+          <text x="720" y="250" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">7</text>
+          <text x="720" y="275" text-anchor="middle" fill="#5A3A1A" font-size="11" font-weight="600">锦城温泉</text>
+          <text x="720" y="287" text-anchor="middle" fill="#8A6A4A" font-size="9">红军宿营地</text>
+        </g>
+        <g class="map-marker" data-site="dahuanglou" onclick="showMapDetail('dahuanglou')">
+          <circle class="pulse" cx="810" cy="248" r="14" fill="#C0212B" opacity=".5"/>
+          <circle cx="810" cy="248" r="10" fill="#C0212B" filter="url(#markerShadow)"/>
+          <text x="810" y="253" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">8</text>
+          <text x="810" y="278" text-anchor="middle" fill="#5A3A1A" font-size="11" font-weight="600">大皇楼</text>
+          <text x="810" y="290" text-anchor="middle" fill="#8A6A4A" font-size="9">老盐街盐铺</text>
+        </g>
+
+        <g class="map-marker" data-site="biaoqiang" onclick="showMapDetail('biaoqiang')">
+          <circle class="pulse" cx="200" cy="310" r="14" fill="#C0212B" opacity=".5"/>
+          <circle cx="200" cy="310" r="10" fill="#C0212B" filter="url(#markerShadow)"/>
+          <text x="200" y="315" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">9</text>
+          <text x="200" y="335" text-anchor="middle" fill="#5A3A1A" font-size="11" font-weight="600">红色标语墙</text>
+          <text x="200" y="347" text-anchor="middle" fill="#8A6A4A" font-size="9">革命印记</text>
+        </g>
+
+        <g class="map-marker" data-site="tongguling" onclick="showMapDetail('tongguling')">
+          <circle class="pulse" cx="80" cy="420" r="14" fill="#7A0F16" opacity=".5"/>
+          <circle cx="80" cy="420" r="10" fill="#7A0F16" filter="url(#markerShadow)"/>
+          <text x="80" y="425" text-anchor="middle" fill="#fff" font-size="9" font-weight="bold">★</text>
+          <text x="80" y="450" text-anchor="middle" fill="#5A3A1A" font-size="11" font-weight="600">铜鼓岭</text>
+          <text x="80" y="462" text-anchor="middle" fill="#8A6A4A" font-size="9">阻击战遗址</text>
+        </g>
+
+        <path d="M 80 420 L 80 380 L 140 350 L 140 220" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="3 3" opacity=".5"/>
+        <text x="60" y="380" fill="#999" font-size="9" transform="rotate(-90,60,380)">约3公里</text>
+
+        <circle cx="450" cy="370" r="5" fill="#C0212B" opacity=".3"/>
+        <text x="460" y="375" fill="#8A6A4A" font-size="9">老街民居区</text>
+
+        <circle cx="380" cy="400" r="5" fill="#C0212B" opacity=".3"/>
+        <text x="390" y="405" fill="#8A6A4A" font-size="9">古渡口遗址</text>
+
+        <rect x="0" y="480" width="900" height="80" fill="#1a1a1a" opacity=".06"/>
+        <text x="20" y="510" fill="#8A6A4A" font-size="10" opacity=".6">红军街环道约1200米 · 宽不足5米 · 青砖黛瓦老屋沿街而立</text>
+        <text x="20" y="528" fill="#8A6A4A" font-size="9" opacity=".5">1934年11月 · 中央红军在此突破第二道封锁线 · 休整七天</text>
+        <text x="20" y="545" fill="#8A6A4A" font-size="9" opacity=".5">★ 铜鼓岭阻击战遗址距镇区约3公里</text>
       </svg>
-      <div class="map-info">点击地图上的标记查看详情</div>
+
+      <div class="map-legend">
+        <div style="font-weight:700;margin-bottom:6px;font-size:13px">图例</div>
+        <div class="lg-item"><div class="lg-dot" style="background:#C0212B"></div>革命遗址</div>
+        <div class="lg-item"><div class="lg-dot" style="background:#7A0F16"></div>战斗遗址</div>
+        <div class="lg-item"><div class="lg-dot" style="background:#5BA3D0"></div>九龙江</div>
+        <div class="lg-item"><div class="lg-dot" style="background:#8B2020"></div>纪念馆</div>
+        <div class="lg-item"><div class="lg-dot" style="background:#D4B870"></div>红军街</div>
+      </div>
+
+      <div class="map-detail" id="mapDetail">
+        <button class="map-close" onclick="closeMapDetail()">×</button>
+        <h4 id="mdTitle"></h4>
+        <p id="mdDesc"></p>
+        <div id="mdTags"></div>
+      </div>
+
+      <div class="map-info">
+        <span>点击地图标记查看详情</span>
+        <span class="hint">共10处红色遗迹</span>
+      </div>
     </div>
   </div>
 </section>
@@ -856,6 +1029,35 @@ document.querySelectorAll('.snap-track').forEach(function(track){
     var x=e.pageX-track.offsetLeft;
     track.scrollLeft=scrollLeft-(x-startX);
   });
+});
+// 地图交互
+var mapData={
+  guqincheng:{title:'城口古秦城',tags:['红五军宿营地','明代古城'],desc:'城口古秦城是明代设置的巡检司城，是城口镇历史最悠久的建筑之一。1934年红军长征途经城口时，红五军在此宿营休整。古城墙保存完好，是城口红色文化的重要见证。'},
+  lifadian:{title:'胜一理发店',tags:['秘密联络站','中共城口特支'],desc:'1930年10月，中共城口特别支部在此设立秘密交通联络站。14名中共党员以理发、打铁、烧炭等职业为掩护，秘密开展革命工作。理发店保持原貌，至今仍可见当年的理发工具和暗格。'},
+  datiepu:{title:'打铁铺',tags:['地下交通站','秘密工作'],desc:'胜一理发店隔壁的铁匠铺，当年同为地下交通站。站内同志以打铁身份从事秘密工作，传递情报、掩护同志。如今以人物塑像形式还原当年场景：师徒二人挥锤打铁，炉火仿佛至今不熄。'},
+  guangxinglou:{title:'广兴栈（毛泽东旧居）',tags:['毛泽东旧居','红军长征宿营地'],desc:'广兴栈位于正龙街，临街而设，这座看似寻常的建筑正是毛泽东曾经居住的地方。1934年11月，红军长征途经城口休整期间，毛泽东在此居住办公。经过修缮的广兴栈遗址再现了毛泽东居住时的场景。'},
+  sanjiaoping:{title:'三角坪',tags:['红五军惩恶遗址','革命遗址'],desc:'三角坪是红五军在城口惩治恶霸地主的遗址。红军在此开展群众工作，打击反动势力，维护百姓利益，赢得了城口民众的拥护和支持。'},
+  tanfuren:{title:'谭甫仁将军旧居',tags:['开国中将','将军故居'],desc:'谭甫仁（1910-1970），中国人民解放军开国中将，城口镇人。其旧居位于广街，是城口红色文化的重要载体。谭甫仁将军一生为革命事业奋斗，是城口人民的骄傲。'},
+  jincheng:{title:'锦城温泉',tags:['红军宿营地','天然温泉'],desc:'锦城温泉是城口镇天然温泉资源。1934年红军长征途经城口休整时，曾在此宿营。温泉为长途跋涉的红军战士提供了难得的休养条件，是红军与城口人民鱼水情深的见证。'},
+  dahuanglou:{title:'大皇楼（老盐街盐铺）',tags:['盐铺遗址','商贸重镇'],desc:'大皇楼位于老盐街，原为盐铺。城口镇历史上是粤湘通衢的商贸重镇，盐业贸易繁荣。红军长征途经时，盐铺为红军提供了物资补给，也是城口商贸文化的重要见证。'},
+  biaoqiang:{title:'红色标语墙',tags:['革命印记','红军标语'],desc:'城口红军街沿途的斑驳墙面上，依稀可见当年红军留下的标语和宣传口号。这些红色印记是红军在城口开展群众工作、宣传革命思想的重要见证，弥足珍贵。'},
+  tongguling:{title:'铜鼓岭阻击战遗址',tags:['阻击战遗址','92座红军烈士墓'],desc:'铜鼓岭位于城口镇附近，是红军长征突破第二道封锁线的重要战场。红军在此与敌军激战，92位红军战士壮烈牺牲，长眠于此。现建有铜鼓岭红军烈士纪念园，是重要的爱国主义教育基地。'}
+};
+function showMapDetail(id){
+  var d=mapData[id];if(!d)return;
+  document.getElementById('mdTitle').textContent=d.title;
+  document.getElementById('mdDesc').textContent=d.desc;
+  document.getElementById('mdTags').innerHTML=d.tags.map(function(t){return'<span class="tag">'+t+'</span>'}).join('');
+  document.getElementById('mapDetail').classList.add('show');
+}
+function closeMapDetail(){
+  document.getElementById('mapDetail').classList.remove('show');
+}
+// 地图标记触屏支持
+document.querySelectorAll('.map-marker').forEach(function(m){
+  m.addEventListener('touchstart',function(e){
+    e.preventDefault();showMapDetail(this.getAttribute('data-site'));
+  },{passive:false});
 });
 </script>
 </body>

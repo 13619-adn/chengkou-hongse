@@ -9,6 +9,10 @@
 <meta property="og:description" content="城口红军街9处革命遗址数字展厅 · 1934年红军长征突破第二道封锁线">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://13619-adn.github.io/chengkou-hongse/">
+<meta property="og:image" content="https://13619-adn.github.io/chengkou-hongse/img/photo_001.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="800">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="description" content="城口红军街数字云展厅，展示9处革命遗址，包括广兴栈毛泽东旧居、胜一理发店秘密联络站、打铁铺地下交通站等。1934年红军长征途经城口，突破第二道封锁线，休整七天。">
 <style>
 :root{
@@ -190,11 +194,38 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .ap-bar-fill{height:100%;background:linear-gradient(90deg,var(--red),#FFD700);border-radius:2px;width:0%;transition:.1s}
 .ap-bar:hover .ap-bar-fill{height:6px;margin-top:-1px}
 .ap-info{font-size:11px;color:#888;margin-top:4px}
+
+/* 返回顶部按钮 */
+.back-top{position:fixed;bottom:80px;right:16px;width:44px;height:44px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:20px;cursor:pointer;z-index:999;opacity:0;transform:translateY(20px);transition:.3s;box-shadow:0 4px 16px rgba(192,33,43,.4);display:flex;align-items:center;justify-content:center}
+.back-top.show{opacity:1;transform:translateY(0)}
+.back-top:active{transform:scale(.9)}
+
+/* 阅读进度条 */
+.read-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--red),var(--gold));z-index:101;width:0%;transition:.1s}
+
+/* 全屏图片查看器 */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.25s}
+.lightbox.show{opacity:1;pointer-events:auto}
+.lightbox img{max-width:92%;max-height:88vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,.5);transform:scale(.95);transition:.25s}
+.lightbox.show img{transform:scale(1)}
+.lightbox-close{position:fixed;top:16px;right:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2001}
+.lightbox-close:hover{background:rgba(255,255,255,.3)}
+.lightbox-counter{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:14px;z-index:2001}
+.lightbox-nav{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:24px;cursor:pointer;z-index:2001;display:flex;align-items:center;justify-content:center;transition:.2s}
+.lightbox-nav:hover{background:rgba(255,255,255,.25)}
+.lightbox-prev{left:16px}
+.lightbox-next{right:16px}
+
+/* 滚动渐入动画 */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.fade-up.in-view{opacity:1;transform:translateY(0)}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
+
+<div class="read-progress" id="readProgress"></div>
 
 <nav>
   <div class="nav-inner">
@@ -1177,6 +1208,18 @@ document.querySelectorAll('.map-marker').forEach(function(m){
 });
 </script>
 
+<!-- 返回顶部按钮 -->
+<button class="back-top" id="backTop" onclick="scrollToTop()">↑</button>
+
+<!-- 全屏图片查看器 -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <img id="lightboxImg" src="" alt="">
+  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
 <!-- 音频播放器 -->
 <div class="audio-player" id="audioPlayer">
   <div class="ap-header">
@@ -1252,6 +1295,134 @@ audioEl.addEventListener('ended',function(){
   barFill.style.width='0%';
   curTime.textContent='0:00';
 });
+</script>
+
+<script>
+/* ===== 1. 滚动联动导航 (Scroll Spy) ===== */
+var navLinks = document.querySelectorAll('.nav-links a');
+var sections = [];
+navLinks.forEach(function(a){
+  var id = a.getAttribute('href').replace('#','');
+  var el = document.getElementById(id);
+  if(el) sections.push({id:id, el:el, link:a});
+});
+
+var spyObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      var id = entry.target.id;
+      navLinks.forEach(function(a){
+        if(a.getAttribute('href') === '#'+id){ a.classList.add('active'); }
+        else { a.classList.remove('active'); }
+      });
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+
+sections.forEach(function(s){ spyObserver.observe(s.el); });
+
+/* ===== 2. 返回顶部按钮 + 阅读进度条 ===== */
+var backTop = document.getElementById('backTop');
+var readProgress = document.getElementById('readProgress');
+
+window.addEventListener('scroll', function(){
+  var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  
+  // 返回顶部按钮
+  if(scrollTop > 400){
+    backTop.classList.add('show');
+  } else {
+    backTop.classList.remove('show');
+  }
+  
+  // 阅读进度条
+  readProgress.style.width = pct + '%';
+}, { passive: true });
+
+function scrollToTop(){
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ===== 3. 全屏图片查看器 (Lightbox) ===== */
+var allImages = Array.from(document.querySelectorAll('.snap-slide img'));
+var currentLbIndex = 0;
+var lightbox = document.getElementById('lightbox');
+var lightboxImg = document.getElementById('lightboxImg');
+var lightboxCounter = document.getElementById('lightboxCounter');
+
+allImages.forEach(function(img, idx){
+  img.style.cursor = 'zoom-in';
+  img.addEventListener('click', function(e){
+    e.stopPropagation();
+    openLightbox(idx);
+  });
+  img.addEventListener('touchend', function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    openLightbox(idx);
+  });
+});
+
+function openLightbox(idx){
+  currentLbIndex = idx;
+  lightboxImg.src = allImages[idx].src;
+  lightboxCounter.textContent = (idx + 1) + ' / ' + allImages.length;
+  lightbox.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(){
+  lightbox.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function lightboxNav(dir){
+  // 找到当前图片所在画廊的范围
+  var currentImg = allImages[currentLbIndex];
+  var gallery = currentImg.closest('.snap-track');
+  var galleryImages = Array.from(gallery.querySelectorAll('.snap-slide img'));
+  var localIdx = galleryImages.indexOf(currentImg);
+  
+  localIdx += dir;
+  if(localIdx < 0) localIdx = galleryImages.length - 1;
+  if(localIdx >= galleryImages.length) localIdx = 0;
+  
+  var newImg = galleryImages[localIdx];
+  currentLbIndex = allImages.indexOf(newImg);
+  lightboxImg.src = newImg.src;
+  lightboxCounter.textContent = (localIdx + 1) + ' / ' + galleryImages.length;
+}
+
+// 点击背景关闭
+lightbox.addEventListener('click', function(e){
+  if(e.target === lightbox) closeLightbox();
+});
+
+// 键盘支持
+document.addEventListener('keydown', function(e){
+  if(!lightbox.classList.contains('show')) return;
+  if(e.key === 'Escape') closeLightbox();
+  if(e.key === 'ArrowLeft') lightboxNav(-1);
+  if(e.key === 'ArrowRight') lightboxNav(1);
+});
+
+/* ===== 4. 滚动渐入动画 ===== */
+// 给主要区块添加 fade-up 类
+var animTargets = document.querySelectorAll('.hall-section, .hall-card, .tl-item, .map-stat, .sec-title, .sec-sub');
+animTargets.forEach(function(el){ el.classList.add('fade-up'); });
+
+var animObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      entry.target.classList.add('in-view');
+      animObserver.unobserve(entry.target);
+    }
+  });
+}, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+
+animTargets.forEach(function(el){ animObserver.observe(el); });
 </script>
 </body>
 </html>

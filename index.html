@@ -252,26 +252,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .ai-send{width:40px;height:40px;border-radius:50%;background:var(--red);border:none;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s}
 .ai-send:active{transform:scale(.9)}
 
-/* 数据可视化大屏 */
-#data-viz{padding:60px 0;background:linear-gradient(180deg,#0f0a08,#1a1410);color:#fff}
-#data-viz .sec-tag{color:var(--gold)}
-#data-viz .sec-title{color:#fff}
-#data-viz .sec-sub{color:rgba(255,255,255,.5)}
-.dv-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:32px}
-.dv-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;position:relative;overflow:hidden}
-.dv-card-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.dv-card-title .dot{width:8px;height:8px;background:var(--gold);border-radius:50%;flex-shrink:0}
-.dv-card canvas{width:100%!important;max-height:260px}
-.dv-card.full{grid-column:1/-1}
 @media(max-width:768px){
-  .dv-grid{grid-template-columns:1fr}
   .ai-panel{width:100%;border-radius:16px 16px 0 0}
   .ai-fab{right:16px;bottom:140px}
 }
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#C0212B">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -291,7 +278,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
       <li><a href="#halls">展厅</a></li>
       <li><a href="#timeline">时间轴</a></li>
       <li><a href="#map-section">地图</a></li>
-      <li><a href="#data-viz">数据</a></li>
       <li><a href="#about">关于</a></li>
     </ul>
   </div>
@@ -1111,32 +1097,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
   </div>
 </section>
 
-<section id="data-viz">
-  <div class="container">
-    <span class="sec-tag">DATA INSIGHT</span>
-    <h2 class="sec-title">红色数据大屏</h2>
-    <p class="sec-sub">城口红色历史的多维度数据可视化分析</p>
-    <div class="dv-grid">
-      <div class="dv-card">
-        <div class="dv-card-title"><span class="dot"></span>各展区照片数量统计</div>
-        <canvas id="chart1"></canvas>
-      </div>
-      <div class="dv-card">
-        <div class="dv-card-title"><span class="dot"></span>城口特支潜伏年限</div>
-        <canvas id="chart2"></canvas>
-      </div>
-      <div class="dv-card">
-        <div class="dv-card-title"><span class="dot"></span>红军长征关键节点</div>
-        <canvas id="chart3"></canvas>
-      </div>
-      <div class="dv-card">
-        <div class="dv-card-title"><span class="dot"></span>遗址类型分布</div>
-        <canvas id="chart4"></canvas>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section id="about">
   <div class="container">
     <h2>城口红迹</h2>
@@ -1635,46 +1595,7 @@ function aiQuick(q){
   sendAI();
 }
 
-/* ===== 6. 数据可视化大屏 ===== */
-function initDataViz(){
-  if(typeof Chart==='undefined'){setTimeout(initDataViz,500);return;}
-  // 暗色主题
-  Chart.defaults.color='rgba(255,255,255,.6)';
-  Chart.defaults.borderColor='rgba(255,255,255,.08)';
-  Chart.defaults.font.family='-apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
-
-  // 图1: 各展区照片数量
-  new Chart(document.getElementById('chart1'),{
-    type:'bar',
-    data:{labels:['标语墙','谭甫仁故居','广兴栈','广兴站战役','打铁铺','故城遗址','锦城温泉','铜鼓岭'],datasets:[{label:'照片数量',data:[1,3,2,3,12,3,2,16],backgroundColor:['#C0212B','#D4A24C','#C0212B','#D4A24C','#C0212B','#D4A24C','#C0212B','#D4A24C'],borderRadius:6}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:4}}}}
-  });
-
-  // 图2: 城口特支潜伏年限
-  new Chart(document.getElementById('chart2'),{
-    type:'line',
-    data:{labels:['1930','1931','1932','1933','1934'],datasets:[{label:'党员人数',data:[14,14,14,14,14],borderColor:'#C0212B',backgroundColor:'rgba(192,33,43,.15)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#D4A24C'}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:false,min:10,max:18}}}
-  });
-
-  // 图3: 长征关键节点
-  new Chart(document.getElementById('chart3'),{
-    type:'bar',
-    data:{labels:['突破封锁线','城口休整','毛主席借宿','特支潜伏','遗址保护'],datasets:[{label:'持续天数/年',data:[7,7,1,1460,90],backgroundColor:['#C0212B','#D4A24C','#C0212B','#D4A24C','#C0212B'],borderRadius:6}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}
-  });
-
-  // 图4: 遗址类型分布
-  new Chart(document.getElementById('chart4'),{
-    type:'doughnut',
-    data:{labels:['旧址故居','战斗遗址','秘密联络点','纪念设施','其他'],datasets:[{data:[3,2,2,1,1],backgroundColor:['#C0212B','#D4A24C','#8B4513','#5A3A1A','#999'],borderColor:'rgba(0,0,0,.2)',borderWidth:2}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:12,padding:10,font:{size:11}}}},cutout:'60%'}
-  });
-}
-// 延迟初始化
-setTimeout(initDataViz,500);
-
-/* ===== 7. PWA Service Worker 注册 ===== */
+/* ===== 6. PWA Service Worker 注册 ===== */
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(function(e){console.log('SW注册失败:',e)});
 }

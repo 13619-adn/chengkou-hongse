@@ -219,9 +219,65 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 /* 滚动渐入动画 */
 .fade-up{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
 .fade-up.in-view{opacity:1;transform:translateY(0)}
+
+/* AI 问答助手 */
+.ai-fab{position:fixed;bottom:80px;right:72px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--red),#8B2020);color:#fff;border:none;font-size:22px;cursor:pointer;z-index:998;box-shadow:0 4px 20px rgba(192,33,43,.5);display:flex;align-items:center;justify-content:center;transition:.3s}
+.ai-fab:active{transform:scale(.9)}
+.ai-fab .ai-dot{position:absolute;top:2px;right:2px;width:10px;height:10px;background:#0f0;border-radius:50%;border:2px solid var(--red)}
+.ai-panel{position:fixed;bottom:0;right:0;width:380px;max-width:100%;height:520px;max-height:85vh;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -4px 40px rgba(0,0,0,.15);z-index:1001;display:flex;flex-direction:column;transform:translateX(100%);transition:.3s;overflow:hidden}
+.ai-panel.show{transform:translateX(0)}
+.ai-panel-head{background:linear-gradient(135deg,var(--red-dark),var(--red));color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ai-panel-head .ai-h-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px}
+.ai-panel-head .ai-h-sub{font-size:11px;color:rgba(255,255,255,.7);margin-top:2px}
+.ai-panel-head .ai-h-avatar{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ai-close{background:none;border:none;color:rgba(255,255,255,.6);font-size:22px;cursor:pointer;padding:4px 8px}
+.ai-close:hover{color:#fff}
+.ai-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:#f7f5f2;-webkit-overflow-scrolling:touch}
+.ai-msg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.7;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ai-msg.bot{align-self:flex-start;background:#fff;border:1px solid #e8e4dd;color:#333;border-bottom-left-radius:4px}
+.ai-msg.user{align-self:flex-end;background:var(--red);color:#fff;border-bottom-right-radius:4px}
+.ai-msg.bot b{color:var(--red)}
+.ai-typing{align-self:flex-start;display:flex;gap:4px;padding:12px 16px}
+.ai-typing span{width:8px;height:8px;background:#bbb;border-radius:50%;animation:typing 1.4s infinite}
+.ai-typing span:nth-child(2){animation-delay:.2s}
+.ai-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,60%,100%{opacity:.3;transform:scale(.8)}30%{opacity:1;transform:scale(1.1)}}
+.ai-quick{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 8px;flex-shrink:0}
+.ai-quick button{padding:6px 12px;border:1.5px solid var(--red);border-radius:16px;background:#fff;color:var(--red);font-size:12px;cursor:pointer;white-space:nowrap;transition:.2s}
+.ai-quick button:active{background:var(--red);color:#fff}
+.ai-input-row{display:flex;gap:8px;padding:12px 16px;border-top:1px solid #eee;flex-shrink:0;background:#fff}
+.ai-input-row input{flex:1;padding:10px 14px;border:1.5px solid #e0dcd4;border-radius:22px;font-size:14px;outline:none;transition:.2s;font-family:inherit}
+.ai-input-row input:focus{border-color:var(--red)}
+.ai-send{width:40px;height:40px;border-radius:50%;background:var(--red);border:none;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s}
+.ai-send:active{transform:scale(.9)}
+
+/* 数据可视化大屏 */
+#data-viz{padding:60px 0;background:linear-gradient(180deg,#0f0a08,#1a1410);color:#fff}
+#data-viz .sec-tag{color:var(--gold)}
+#data-viz .sec-title{color:#fff}
+#data-viz .sec-sub{color:rgba(255,255,255,.5)}
+.dv-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:32px}
+.dv-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;position:relative;overflow:hidden}
+.dv-card-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.dv-card-title .dot{width:8px;height:8px;background:var(--gold);border-radius:50%;flex-shrink:0}
+.dv-card canvas{width:100%!important;max-height:260px}
+.dv-card.full{grid-column:1/-1}
+@media(max-width:768px){
+  .dv-grid{grid-template-columns:1fr}
+  .ai-panel{width:100%;border-radius:16px 16px 0 0}
+  .ai-fab{right:16px;bottom:140px}
+}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#C0212B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="城口红迹">
+<link rel="apple-touch-icon" href="img/photo_001.jpg">
 </head>
 <body>
 
@@ -235,6 +291,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
       <li><a href="#halls">展厅</a></li>
       <li><a href="#timeline">时间轴</a></li>
       <li><a href="#map-section">地图</a></li>
+      <li><a href="#data-viz">数据</a></li>
       <li><a href="#about">关于</a></li>
     </ul>
   </div>
@@ -1054,6 +1111,32 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
   </div>
 </section>
 
+<section id="data-viz">
+  <div class="container">
+    <span class="sec-tag">DATA INSIGHT</span>
+    <h2 class="sec-title">红色数据大屏</h2>
+    <p class="sec-sub">城口红色历史的多维度数据可视化分析</p>
+    <div class="dv-grid">
+      <div class="dv-card">
+        <div class="dv-card-title"><span class="dot"></span>各展区照片数量统计</div>
+        <canvas id="chart1"></canvas>
+      </div>
+      <div class="dv-card">
+        <div class="dv-card-title"><span class="dot"></span>城口特支潜伏年限</div>
+        <canvas id="chart2"></canvas>
+      </div>
+      <div class="dv-card">
+        <div class="dv-card-title"><span class="dot"></span>红军长征关键节点</div>
+        <canvas id="chart3"></canvas>
+      </div>
+      <div class="dv-card">
+        <div class="dv-card-title"><span class="dot"></span>遗址类型分布</div>
+        <canvas id="chart4"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="about">
   <div class="container">
     <h2>城口红迹</h2>
@@ -1207,6 +1290,36 @@ document.querySelectorAll('.map-marker').forEach(function(m){
   },{passive:false});
 });
 </script>
+
+<!-- AI 问答助手 -->
+<button class="ai-fab" id="aiFab" onclick="toggleAI()">
+  <span>🤖</span>
+  <span class="ai-dot"></span>
+</button>
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-panel-head">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="ai-h-avatar">🤖</div>
+      <div>
+        <div class="ai-h-title">红色文化AI助手</div>
+        <div class="ai-h-sub">城口红军街智能问答 · 随时提问</div>
+      </div>
+    </div>
+    <button class="ai-close" onclick="toggleAI()">×</button>
+  </div>
+  <div class="ai-msgs" id="aiMsgs"></div>
+  <div class="ai-quick" id="aiQuick">
+    <button onclick="aiQuick('毛泽东在城口住在哪里')">毛泽东住哪</button>
+    <button onclick="aiQuick('打铁铺的故事')">打铁铺故事</button>
+    <button onclick="aiQuick('红军在城口休整了多久')">休整多久</button>
+    <button onclick="aiQuick('城口特支是什么')">城口特支</button>
+    <button onclick="aiQuick('铜鼓岭战役')">铜鼓岭</button>
+  </div>
+  <div class="ai-input-row">
+    <input type="text" id="aiInput" placeholder="输入你的问题..." onkeydown="if(event.key==='Enter')sendAI()">
+    <button class="ai-send" onclick="sendAI()">➤</button>
+  </div>
+</div>
 
 <!-- 返回顶部按钮 -->
 <button class="back-top" id="backTop" onclick="scrollToTop()">↑</button>
@@ -1423,6 +1536,148 @@ var animObserver = new IntersectionObserver(function(entries){
 }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
 
 animTargets.forEach(function(el){ animObserver.observe(el); });
+</script>
+
+<script>
+/* ===== 5. AI 红色知识问答助手 ===== */
+var aiPanel=document.getElementById('aiPanel');
+var aiMsgs=document.getElementById('aiMsgs');
+var aiInput=document.getElementById('aiInput');
+
+// 知识库
+var kb=[
+  {k:['毛泽东','住','哪里','广兴栈','借宿','旧居'],a:'毛泽东在城口期间借宿于<b>广兴栈</b>（位于正龙街，临街而设）。1934年11月，红军长征途经城口休整期间，毛泽东在此居住办公。经过修缮的广兴栈遗址再现了毛泽东居住时的场景，是城口红色文化最重要的遗址之一。'},
+  {k:['打铁','铺','铁匠','故事','交通站','秘密'],a:'<b>打铁铺</b>是胜一理发店隔壁的铁匠铺，当年同为地下交通站。站内同志以打铁身份从事秘密工作，传递情报、掩护同志。如今以人物塑像形式还原当年场景：师徒二人挥锤打铁，炉火仿佛至今不熄。打铁铺的炉火不灭，军民鱼水情长。'},
+  {k:['休整','几天','多久','七天','停留','驻扎'],a:'1934年11月，中央红军突破国民党第二道封锁线后，在城口<b>休整了七天</b>。这七天里，红军补充物资、开展群众工作、宣传革命思想。八位元帅曾到访城口，毛泽东在此借宿一夜。这七天是长征路上的重要休整期。'},
+  {k:['城口特支','特别支部','秘密联络','理发店','地下党','党员','14'],a:'<b>中共城口特别支部</b>成立于1930年10月，在胜一理发店设立秘密交通联络站。14名中共党员以理发、打铁、烧炭等职业为掩护，秘密开展革命工作。该支部在城口潜伏<b>四年</b>（1930-1934），是红军长征途经城口时的重要内应力量。'},
+  {k:['铜鼓','岭','阻击','战役','烈士','牺牲','92','墓'],a:'<b>铜鼓岭阻击战</b>是红军长征突破第二道封锁线的重要战场。红军在此与敌军激战，<b>92位</b>红军战士壮烈牺牲，长眠于此。现建有铜鼓岭红军烈士纪念园，是重要的爱国主义教育基地。烈士们的英勇事迹永载史册。'},
+  {k:['谭甫仁','将军','中将','故居','出生'],a:'<b>谭甫仁</b>（1910-1970），中国人民解放军<b>开国中将</b>，城口镇人。其故居位于紫正街5号，是韶关唯一开国中将的出生地。故居为典型岭南风格建筑，青砖灰瓦，古朴典雅。谭甫仁将军一生为革命事业奋斗，是城口人民的骄傲。'},
+  {k:['红军标语','墙','墨宝','标语'],a:'<b>红军标语墙</b>是1934年11月初红军过境城口时在墙面留下的墨宝标语。这面墙至今仍然可见，是城口珍贵的不可移动革命文物。标语见证了红军在城口开展群众宣传工作的历史。'},
+  {k:['广兴','站','战役','战斗','封锁线','突破'],a:'<b>广兴站战役</b>是红军突破国民党第二道封锁线的关键战斗。1934年11月，中央红军在城口与敌军激战，成功突破封锁线，为长征的继续前进打开了通道。城口因此成为长征路上的重要节点。'},
+  {k:['三角坪','惩恶','恶霸','群众工作'],a:'<b>三角坪</b>是红五军在城口惩治恶霸地主的遗址。红军在此开展群众工作，打击反动势力，维护百姓利益，赢得了城口民众的拥护和支持。这体现了红军为人民服务的宗旨。'},
+  {k:['故城','遗址','千年','宋代','古城'],a:'<b>故城遗址</b>承载着千年历史文脉，是粤北地区重要的历史文化遗存。城墙残垣、古街石板路诉说着往昔的辉煌。红军长征途经此地，古老的城池见证了这段红色历史，历史与革命在此交汇。'},
+  {k:['锦城','温泉','宿营','休养'],a:'<b>锦城温泉</b>是城口镇天然温泉资源。1934年红军长征途经城口休整时，曾在此宿营。温泉为长途跋涉的红军战士提供了难得的休养条件，是红军与城口人民鱼水情深的见证。'},
+  {k:['大皇楼','盐铺','盐街','商贸','盐业'],a:'<b>大皇楼</b>位于老盐街，原为盐铺。城口镇历史上是粤湘通衢的商贸重镇，盐业贸易繁荣。红军长征途经时，盐铺为红军提供了物资补给，也是城口商贸文化的重要见证。'},
+  {k:['元帅','八位','几位','将帅'],a:'共有<b>八位元帅</b>曾到访城口，包括朱德、彭德怀、林彪、刘伯承、贺龙、罗荣桓、聂荣臻、叶剑英。这在中国革命史上是极为罕见的，充分说明城口在红军长征中的重要战略地位。'},
+  {k:['长征','1934','封锁线','第二道'],a:'1934年11月，中央红军进行战略转移（长征），在城口突破国民党<b>第二道封锁线</b>。城口位于广东省韶关市仁化县，是粤北重镇。红军在此休整七天，补充物资，留下了丰富的红色遗迹。城口因此被称为"长征路上的隐秘坐标"。'},
+  {k:['红军街','街道','老街','600','商铺'],a:'<b>城口红军街</b>全长约600米，沿街有130多家商铺。这条老街保存了大量红色革命遗迹，包括广兴栈、胜一理发店、打铁铺等9处革命遗址。街道至今仍保留着当年的风貌，是城口红色文化的核心区域。'},
+  {k:['地图','遗址','几处','多少','分布'],a:'城口红军街共有<b>9处革命遗址</b>：①城口古秦城 ②胜一理发店 ③打铁铺 ④广兴栈（毛泽东旧居）⑤三角坪 ⑥谭甫仁将军故居 ⑦锦城温泉 ⑧大皇楼 ⑨红色标语墙。另有铜鼓岭阻击战遗址在镇附近。环道约1200米。'},
+];
+
+// 智能匹配
+function matchKB(q){
+  q=q.toLowerCase().replace(/\s/g,'');
+  var best=null,bestScore=0;
+  for(var i=0;i<kb.length;i++){
+    var entry=kb[i],score=0;
+    for(var j=0;j<entry.k.length;j++){
+      var kw=entry.k[j];
+      if(q.indexOf(kw.toLowerCase())>=0){score+=kw.length;}
+    }
+    if(score>bestScore){bestScore=score;best=entry;}
+  }
+  if(best&&bestScore>0)return best.a;
+  // 默认回复
+  return '抱歉，我暂时无法回答这个问题。你可以试试问我：<br>• "毛泽东在城口住在哪里？"<br>• "打铁铺的故事"<br>• "红军在城口休整了多久？"<br>• "城口特支是什么？"<br>• "铜鼓岭战役"<br>• "有几位元帅到过城口？"';
+}
+
+function toggleAI(){
+  aiPanel.classList.toggle('show');
+  if(aiPanel.classList.contains('show')&&aiMsgs.children.length===0){
+    setTimeout(function(){
+      addBotMsg('你好！我是<b>红色文化AI助手</b> 🤖<br>关于城口红军街的任何问题都可以问我，比如：<br>• 毛泽东在城口住在哪里？<br>• 打铁铺有什么故事？<br>• 红军在城口休整了多久？<br>• 铜鼓岭战役牺牲了多少人？');
+    },300);
+  }
+}
+
+function addBotMsg(html){
+  var div=document.createElement('div');
+  div.className='ai-msg bot';
+  div.innerHTML=html;
+  aiMsgs.appendChild(div);
+  aiMsgs.scrollTop=aiMsgs.scrollHeight;
+}
+function addUserMsg(text){
+  var div=document.createElement('div');
+  div.className='ai-msg user';
+  div.textContent=text;
+  aiMsgs.appendChild(div);
+  aiMsgs.scrollTop=aiMsgs.scrollHeight;
+}
+function showTyping(){
+  var div=document.createElement('div');
+  div.className='ai-typing';
+  div.id='aiTyping';
+  div.innerHTML='<span></span><span></span><span></span>';
+  aiMsgs.appendChild(div);
+  aiMsgs.scrollTop=aiMsgs.scrollHeight;
+}
+function hideTyping(){
+  var t=document.getElementById('aiTyping');
+  if(t)t.remove();
+}
+
+function sendAI(){
+  var q=aiInput.value.trim();
+  if(!q)return;
+  aiInput.value='';
+  addUserMsg(q);
+  showTyping();
+  setTimeout(function(){
+    hideTyping();
+    var ans=matchKB(q);
+    addBotMsg(ans);
+  },600+Math.random()*600);
+}
+
+function aiQuick(q){
+  aiInput.value=q;
+  sendAI();
+}
+
+/* ===== 6. 数据可视化大屏 ===== */
+function initDataViz(){
+  if(typeof Chart==='undefined'){setTimeout(initDataViz,500);return;}
+  // 暗色主题
+  Chart.defaults.color='rgba(255,255,255,.6)';
+  Chart.defaults.borderColor='rgba(255,255,255,.08)';
+  Chart.defaults.font.family='-apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
+
+  // 图1: 各展区照片数量
+  new Chart(document.getElementById('chart1'),{
+    type:'bar',
+    data:{labels:['标语墙','谭甫仁故居','广兴栈','广兴站战役','打铁铺','故城遗址','锦城温泉','铜鼓岭'],datasets:[{label:'照片数量',data:[1,3,2,3,12,3,2,16],backgroundColor:['#C0212B','#D4A24C','#C0212B','#D4A24C','#C0212B','#D4A24C','#C0212B','#D4A24C'],borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:4}}}}
+  });
+
+  // 图2: 城口特支潜伏年限
+  new Chart(document.getElementById('chart2'),{
+    type:'line',
+    data:{labels:['1930','1931','1932','1933','1934'],datasets:[{label:'党员人数',data:[14,14,14,14,14],borderColor:'#C0212B',backgroundColor:'rgba(192,33,43,.15)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#D4A24C'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:false,min:10,max:18}}}
+  });
+
+  // 图3: 长征关键节点
+  new Chart(document.getElementById('chart3'),{
+    type:'bar',
+    data:{labels:['突破封锁线','城口休整','毛主席借宿','特支潜伏','遗址保护'],datasets:[{label:'持续天数/年',data:[7,7,1,1460,90],backgroundColor:['#C0212B','#D4A24C','#C0212B','#D4A24C','#C0212B'],borderRadius:6}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}
+  });
+
+  // 图4: 遗址类型分布
+  new Chart(document.getElementById('chart4'),{
+    type:'doughnut',
+    data:{labels:['旧址故居','战斗遗址','秘密联络点','纪念设施','其他'],datasets:[{data:[3,2,2,1,1],backgroundColor:['#C0212B','#D4A24C','#8B4513','#5A3A1A','#999'],borderColor:'rgba(0,0,0,.2)',borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:12,padding:10,font:{size:11}}}},cutout:'60%'}
+  });
+}
+// 延迟初始化
+setTimeout(initDataViz,500);
+
+/* ===== 7. PWA Service Worker 注册 ===== */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(function(e){console.log('SW注册失败:',e)});
+}
 </script>
 </body>
 </html>

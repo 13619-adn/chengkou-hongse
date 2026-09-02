@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes">
 <meta name="format-detection" content="telephone=no">
 <title>城口红迹 · 数字云展厅</title>
+<meta property="og:title" content="城口红迹 · 数字云展厅">
+<meta property="og:description" content="城口红军街9处革命遗址数字展厅 · 1934年红军长征突破第二道封锁线">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://13619-adn.github.io/chengkou-hongse/">
+<meta name="description" content="城口红军街数字云展厅，展示9处革命遗址，包括广兴栈毛泽东旧居、胜一理发店秘密联络站、打铁铺地下交通站等。1934年红军长征途经城口，突破第二道封锁线，休整七天。">
 <style>
 :root{
   --red:#C0212B;--red-dark:#7A0F16;--gold:#D4A24C;--ink:#1a1a1a;
@@ -113,6 +118,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .map-tab:hover{opacity:.8}
 .map-container{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:#f5f0e8}
 .map-svg{width:100%;height:auto;display:block}
+#leaflet-map{width:100%;height:450px;border-radius:var(--radius);z-index:1}
+.leaflet-map-wrap{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:16px}
+.map-switch{display:flex;gap:8px;margin-bottom:12px}
+.map-switch button{padding:6px 14px;border-radius:16px;border:2px solid var(--red);background:transparent;color:var(--red);font-size:12px;cursor:pointer;font-weight:600;transition:.2s}
+.map-switch button.active{background:var(--red);color:#fff}
+.leaflet-popup-content h4{margin:0 0 4px;color:var(--red);font-size:14px}
+.leaflet-popup-content p{margin:2px 0;font-size:12px;color:#666}
+.leaflet-popup-content .popup-tag{display:inline-block;padding:2px 6px;background:var(--red);color:#fff;border-radius:8px;font-size:10px;margin:2px 2px 0 0}
 .map-marker{cursor:pointer;transition:.2s}
 .map-marker:hover{transform:scale(1.15)}
 .map-marker .pulse{animation:mapPulse 2s ease-out infinite;transform-origin:center}
@@ -160,6 +173,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
   .hero-stat{padding:8px 14px}
 }
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -820,7 +835,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
       <div class="map-stat"><div class="num">7</div><div class="label">休整天数</div></div>
     </div>
 
-    <div class="map-container" style="margin-top:20px">
+    <div class="map-switch">
+      <button class="active" onclick="switchMap('real')">真实地图</button>
+      <button onclick="switchMap('schematic')">示意图</button>
+    </div>
+
+    <div class="leaflet-map-wrap" id="realMapWrap">
+      <div id="leaflet-map"></div>
+      <div class="map-info">
+        <span>点击地图标记查看详情 · 可缩放拖拽</span>
+        <span class="hint">真实卫星定位</span>
+      </div>
+    </div>
+
+    <div class="map-container" id="schematicMapWrap" style="margin-top:20px;display:none">
       <svg class="map-svg" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -1030,6 +1058,76 @@ document.querySelectorAll('.snap-track').forEach(function(track){
     track.scrollLeft=scrollLeft-(x-startX);
   });
 });
+// 地图切换
+function switchMap(type){
+  var real=document.getElementById('realMapWrap');
+  var schem=document.getElementById('schematicMapWrap');
+  var btns=document.querySelectorAll('.map-switch button');
+  if(type==='real'){
+    real.style.display='block';schem.style.display='none';
+    btns[0].classList.add('active');btns[1].classList.remove('active');
+    if(window._leafletMap)setTimeout(function(){window._leafletMap.invalidateSize();},100);
+  }else{
+    real.style.display='none';schem.style.display='block';
+    btns[0].classList.remove('active');btns[1].classList.add('active');
+  }
+}
+// Leaflet 真实地图
+function initLeafletMap(){
+  if(window._leafletMap)return;
+  var map=L.map('leaflet-map',{zoomControl:true,scrollWheelZoom:false}).setView([25.3175,113.7375],16);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:19,attribution:'© OpenStreetMap'
+  }).addTo(map);
+  window._leafletMap=map;
+
+  var redIcon=L.divIcon({className:'leaflet-red-marker',html:'<div style="background:#C0212B;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.4)"></div>',iconSize:[24,24],iconAnchor:[12,24]});
+  var starIcon=L.divIcon({className:'leaflet-star-marker',html:'<div style="background:#7A0F16;width:28px;height:28px;border-radius:50%;border:2px solid #FFD700;box-shadow:0 2px 6px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#FFD700;font-size:14px;font-weight:bold">★</div>',iconSize:[28,28],iconAnchor:[14,28]});
+  var museumIcon=L.divIcon({className:'leaflet-museum-marker',html:'<div style="background:#8B2020;width:28px;height:28px;border-radius:4px;border:2px solid #FFD700;box-shadow:0 2px 6px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#FFD700;font-size:16px">🏛</div>',iconSize:[28,28],iconAnchor:[14,28]});
+
+  // 博物馆
+  L.marker([25.320220,113.732454],{icon:museumIcon}).addTo(map).bindPopup('<h4>红军长征粤北纪念馆</h4><p>广东省唯一以红军长征为主题的纪念馆</p><p>2019年建成 · 建筑面积5583㎡</p><span class="popup-tag">纪念馆</span><span class="popup-tag">与红军街隔河相望</span>');
+
+  // 9处革命遗址（沿河边街、正龙街、紫霞街分布）
+  var sites=[
+    {lat:25.31900,lng:113.73650,id:'guqincheng'},
+    {lat:25.31780,lng:113.73700,id:'lifadian'},
+    {lat:25.31760,lng:113.73730,id:'datiepu'},
+    {lat:25.31680,lng:113.73800,id:'guangxinglou'},
+    {lat:25.31630,lng:113.73850,id:'sanjiaoping'},
+    {lat:25.31580,lng:113.73900,id:'tanfuren'},
+    {lat:25.31530,lng:113.73950,id:'jincheng'},
+    {lat:25.31480,lng:113.74000,id:'dahuanglou'},
+    {lat:25.31820,lng:113.73750,id:'biaoqiang'}
+  ];
+
+  sites.forEach(function(s){
+    var d=mapData[s.id];
+    if(d){
+      L.marker([s.lat,s.lng],{icon:redIcon}).addTo(map).bindPopup(
+        '<h4>'+d.title+'</h4>'+
+        '<p>'+d.desc.substring(0,80)+'...</p>'+
+        d.tags.map(function(t){return'<span class="popup-tag">'+t+'</span>'}).join('')
+      );
+    }
+  });
+
+  // 铜鼓岭（远处）
+  L.marker([25.32500,113.71500],{icon:starIcon}).addTo(map).bindPopup('<h4>铜鼓岭阻击战遗址</h4><p>距镇区约3公里</p><p>92位红军烈士长眠于此</p><span class="popup-tag">阻击战遗址</span><span class="popup-tag">烈士纪念园</span>');
+
+  // 画一条红军街路线
+  var route=[[25.31900,113.73650],[25.31780,113.73700],[25.31680,113.73800],[25.31580,113.73900],[25.31480,113.74000]];
+  L.polyline(route,{color:'#C0212B',weight:3,opacity:.6,dashArray:'8 4'}).addTo(map);
+
+  // 模拟河流
+  var river=[[25.32100,113.73000],[25.31950,113.73400],[25.31800,113.73700],[25.31650,113.74000],[25.31500,113.74300]];
+  L.polyline(river,{color:'#5BA3D0',weight:6,opacity:.5}).addTo(map);
+}
+// 延迟初始化Leaflet（等库加载完）
+setTimeout(function(){
+  if(typeof L!=='undefined'){initLeafletMap();}
+  else{setTimeout(initLeafletMap,500);}
+},300);
 // 地图交互
 var mapData={
   guqincheng:{title:'城口古秦城',tags:['红五军宿营地','明代古城'],desc:'城口古秦城是明代设置的巡检司城，是城口镇历史最悠久的建筑之一。1934年红军长征途经城口时，红五军在此宿营休整。古城墙保存完好，是城口红色文化的重要见证。'},

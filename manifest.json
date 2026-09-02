@@ -1,0 +1,26 @@
+{
+  "name": "城口红迹 · 数字云展厅",
+  "short_name": "城口红迹",
+  "description": "城口红军街数字云展厅 · 1934年红军长征突破第二道封锁线 · 9处革命遗址 · AI智能问答",
+  "start_url": "https://13619-adn.github.io/chengkou-hongse/",
+  "scope": "https://13619-adn.github.io/chengkou-hongse/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#C0212B",
+  "background_color": "#f5f2ed",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "img/photo_001.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "img/photo_001.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

@@ -151,6 +151,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .map-stat{text-align:center;padding:16px 8px;background:var(--cream);border-radius:var(--radius);border:1px solid rgba(192,33,43,.15)}
 .map-stat .num{font-size:28px;font-weight:800;color:var(--red)}
 .map-stat .label{font-size:12px;color:var(--text-mid);margin-top:4px}
+.map-legend{display:flex;flex-wrap:wrap;gap:12px 16px;justify-content:center;margin-top:14px;padding:10px 16px;background:var(--cream);border-radius:var(--radius);border:1px solid rgba(192,33,43,.1)}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-mid)}
+.legend-dot{width:14px;height:14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 
 /* 关于 */
 #about{padding:60px 0;text-align:center;background:var(--red-dark);color:#fff}
@@ -906,11 +909,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
     <h2 class="sec-title">历史时间轴</h2>
     <p class="sec-sub">城口红色记忆关键节点</p>
     <div class="tl-list">
-      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1934.11</div><div class="tl-title">红军突破第二道封锁线</div><div class="tl-desc">中央红军在城口突破国民党第二道封锁线</div></div>
-      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1934.11</div><div class="tl-title">城口七天休整</div><div class="tl-desc">红军在城口休整七天，补充物资</div></div>
-      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1934.11</div><div class="tl-title">毛主席借宿一夜</div><div class="tl-desc">毛泽东在城口老街借宿</div></div>
-      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1934-1938</div><div class="tl-title">特别支部潜伏四年</div><div class="tl-desc">中共城口特别支部在此潜伏四年</div></div>
-      <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">至今</div><div class="tl-title">红色遗迹保护</div><div class="tl-desc">城口红色遗迹持续保护与传承</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">1926</div><div class="tl-title">第二区苏维埃政府成立</div><div class="tl-desc">城口紫震街设立第二区苏维埃政府，城口最早的红色政权</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">1927</div><div class="tl-title">城口将军桥</div><div class="tl-desc">朱德、陈毅率南昌起义军余部途经城口，将军桥因此得名</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">1929</div><div class="tl-title">红五军转战城口</div><div class="tl-desc">彭德怀、滕代远率红五军到城口，宿营古寨城，盐铺采购物资，三角坪惩治恶霸</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">1930.10</div><div class="tl-title">中共城口特别支部成立</div><div class="tl-desc">胜一理发店设立秘密交通联络站，14名党员以职业为掩护开展革命工作</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">1932</div><div class="tl-title">正龙街红军宿营地</div><div class="tl-desc">红军早期部队在正龙街宿营，播撒革命火种</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">1934.11</div><div class="tl-title">突破第二道封锁线</div><div class="tl-desc">中央红军在城口突破国民党第二道封锁线，红一军团指挥部设祖堂坪</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">1934.11</div><div class="tl-title">铜鼓岭阻击战</div><div class="tl-desc">红军在铜鼓岭激战阻击追兵，92位红军战士壮烈牺牲</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">1934.11</div><div class="tl-title">城口七天休整</div><div class="tl-desc">红军在城口休整七天，毛泽东借宿广兴栈，杨茂利店筹款筹粮</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">1930-1934</div><div class="tl-title">特别支部潜伏四年</div><div class="tl-desc">中共城口特别支部潜伏四年，成为红军长征的重要内应力量</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">1998</div><div class="tl-title">谭甫仁将军夫妇墓</div><div class="tl-desc">开国中将谭甫仁夫妇墓迁至城口鳌山水江寨，将军魂归故里</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">2017</div><div class="tl-title">红军长征粤北纪念馆奠基</div><div class="tl-desc">广东省唯一以红军长征为主题的纪念馆在城口动工建设</div></div>
+      <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-year">至今</div><div class="tl-title">红色基因代代传</div><div class="tl-desc">城口19处红色遗迹持续保护，红色文化数字化传承</div></div>
     </div>
   </div>
 </section>
@@ -919,13 +929,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
   <div class="container">
     <span class="sec-tag">DIGITAL MAP</span>
     <h2 class="sec-title">数字地图</h2>
-    <p class="sec-sub">城口红军街红色遗迹分布 · 9处革命遗址 · 环道约1200米</p>
+    <p class="sec-sub">城口红军街红色遗迹分布 · 14处革命遗址 · 跨越三个历史时期</p>
 
     <div class="map-stats">
-      <div class="map-stat"><div class="num">9</div><div class="label">革命遗址</div></div>
-      <div class="map-stat"><div class="num">1200m</div><div class="label">红军街环道</div></div>
-      <div class="map-stat"><div class="num">1934</div><div class="label">长征途经</div></div>
-      <div class="map-stat"><div class="num">7</div><div class="label">休整天数</div></div>
+      <div class="map-stat"><div class="num">14</div><div class="label">革命遗址</div></div>
+      <div class="map-stat"><div class="num">1926</div><div class="label">最早红色政权</div></div>
+      <div class="map-stat"><div class="num">3</div><div class="label">历史时期</div></div>
+      <div class="map-stat"><div class="num">91</div><div class="label">年红色史</div></div>
+    </div>
+
+    <div class="map-legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#E67E22"></span>早期革命（1926-1932）</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#C0212B"></span>红军长征（1934）</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#7A0F16;border:2px solid #FFD700"></span>战役纪念地</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#8B2020;border-radius:4px"></span>纪念馆</div>
     </div>
 
     <div class="map-switch">
@@ -1175,18 +1192,38 @@ function initLeafletMap(){
   window._leafletMap=map;
 
   var redIcon=L.divIcon({className:'leaflet-red-marker',html:'<div style="background:#C0212B;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.4)"></div>',iconSize:[24,24],iconAnchor:[12,24]});
+  var orangeIcon=L.divIcon({className:'leaflet-orange-marker',html:'<div style="background:#E67E22;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.4)"></div>',iconSize:[24,24],iconAnchor:[12,24]});
   var starIcon=L.divIcon({className:'leaflet-star-marker',html:'<div style="background:#7A0F16;width:28px;height:28px;border-radius:50%;border:2px solid #FFD700;box-shadow:0 2px 6px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#FFD700;font-size:14px;font-weight:bold">★</div>',iconSize:[28,28],iconAnchor:[14,28]});
   var museumIcon=L.divIcon({className:'leaflet-museum-marker',html:'<div style="background:#8B2020;width:28px;height:28px;border-radius:4px;border:2px solid #FFD700;box-shadow:0 2px 6px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#FFD700;font-size:16px">🏛</div>',iconSize:[28,28],iconAnchor:[14,28]});
 
   // 博物馆
-  L.marker([25.320220,113.732454],{icon:museumIcon}).addTo(map).bindPopup('<h4>红军长征粤北纪念馆</h4><p>广东省唯一以红军长征为主题的纪念馆</p><p>2019年建成 · 建筑面积5583㎡</p><span class="popup-tag">纪念馆</span><span class="popup-tag">与红军街隔河相望</span>');
+  L.marker([25.320220,113.732454],{icon:museumIcon}).addTo(map).bindPopup('<h4>红军长征粤北纪念馆</h4><p>广东省唯一以红军长征为主题的纪念馆</p><p>2017年奠基 · 建筑面积5583㎡</p><span class="popup-tag">纪念馆</span><span class="popup-tag">与红军街隔河相望</span>');
 
-  // 9处革命遗址（沿河边街、正龙街、紫霞街分布）
+  // 早期革命遗址（1926-1932，橙色标记）
+  var earlySites=[
+    {lat:25.31850,lng:113.73600,id:'suweiai'},
+    {lat:25.32050,lng:113.73400,id:'jiangjunqiao'},
+    {lat:25.31600,lng:113.74050,id:'guzhaicheng'}
+  ];
+  earlySites.forEach(function(s){
+    var d=mapData[s.id];
+    if(d){
+      L.marker([s.lat,s.lng],{icon:orangeIcon}).addTo(map).bindPopup(
+        '<h4>'+d.title+'</h4>'+
+        '<p>'+d.desc.substring(0,80)+'...</p>'+
+        d.tags.map(function(t){return'<span class="popup-tag" style="background:#E67E22">'+t+'</span>'}).join('')
+      );
+    }
+  });
+
+  // 红军长征时期遗址（1934，红色标记）
   var sites=[
     {lat:25.31900,lng:113.73650,id:'guqincheng'},
     {lat:25.31780,lng:113.73700,id:'lifadian'},
     {lat:25.31760,lng:113.73730,id:'datiepu'},
+    {lat:25.31720,lng:113.73770,id:'hongyijuntuan'},
     {lat:25.31680,lng:113.73800,id:'guangxinglou'},
+    {lat:25.31650,lng:113.73830,id:'yangmaoli'},
     {lat:25.31630,lng:113.73850,id:'sanjiaoping'},
     {lat:25.31580,lng:113.73900,id:'tanfuren'},
     {lat:25.31530,lng:113.73950,id:'jincheng'},
@@ -1223,10 +1260,15 @@ setTimeout(function(){
 },300);
 // 地图交互
 var mapData={
+  suweiai:{title:'第二区苏维埃政府遗址',tags:['1926年','最早红色政权'],desc:'1926年在城群村紫震街设立的第二区苏维埃政府，是城口最早的红色政权组织，见证了大革命时期城口人民的革命斗争，是城口红色历史的起点。'},
+  jiangjunqiao:{title:'城口将军桥',tags:['1927年','朱德陈毅途经'],desc:'1927年，朱德、陈毅率南昌起义军余部途经城口，在大河背水的桥上留下了革命足迹。为纪念这段历史，当地群众将此桥称为将军桥。'},
+  guzhaicheng:{title:'城口古寨城—红五军宿营地',tags:['1929年','红五军宿营'],desc:'1929年，彭德怀、滕代远率红五军转战粤北途经城口，在老盐街口古寨城宿营休整。红五军在此期间开展群众工作，宣传革命思想，播撒红色火种。'},
   guqincheng:{title:'城口古秦城',tags:['红五军宿营地','明代古城'],desc:'城口古秦城是明代设置的巡检司城，是城口镇历史最悠久的建筑之一。1934年红军长征途经城口时，红五军在此宿营休整。古城墙保存完好，是城口红色文化的重要见证。'},
   lifadian:{title:'胜一理发店',tags:['秘密联络站','中共城口特支'],desc:'1930年10月，中共城口特别支部在此设立秘密交通联络站。14名中共党员以理发、打铁、烧炭等职业为掩护，秘密开展革命工作。理发店保持原貌，至今仍可见当年的理发工具和暗格。'},
   datiepu:{title:'打铁铺',tags:['地下交通站','秘密工作'],desc:'胜一理发店隔壁的铁匠铺，当年同为地下交通站。站内同志以打铁身份从事秘密工作，传递情报、掩护同志。如今以人物塑像形式还原当年场景：师徒二人挥锤打铁，炉火仿佛至今不熄。'},
+  hongyijuntuan:{title:'红一军团指挥部遗址',tags:['红一军团','长征指挥部'],desc:'1934年11月红军长征突破第二道封锁线时，红一军团指挥部设在镇区祖堂坪。这里是红军指挥作战、部署休整的核心场所，见证了长征路上的重要决策。'},
   guangxinglou:{title:'广兴栈（毛泽东旧居）',tags:['毛泽东旧居','红军长征宿营地'],desc:'广兴栈位于正龙街，临街而设，这座看似寻常的建筑正是毛泽东曾经居住的地方。1934年11月，红军长征途经城口休整期间，毛泽东在此居住办公。经过修缮的广兴栈遗址再现了毛泽东居住时的场景。'},
+  yangmaoli:{title:'杨茂利店—红军筹款处',tags:['红军筹款','物资补给'],desc:'正龙街30号杨茂利店是1934年红军长征途经城口时的筹款处。红军在此向开明绅士和商人筹粮筹款，补充军需物资，得到了城口人民的大力支持。'},
   sanjiaoping:{title:'三角坪',tags:['红五军惩恶遗址','革命遗址'],desc:'三角坪是红五军在城口惩治恶霸地主的遗址。红军在此开展群众工作，打击反动势力，维护百姓利益，赢得了城口民众的拥护和支持。'},
   tanfuren:{title:'谭甫仁将军旧居',tags:['开国中将','将军故居'],desc:'谭甫仁（1910-1970），中国人民解放军开国中将，城口镇人。其旧居位于广街，是城口红色文化的重要载体。谭甫仁将军一生为革命事业奋斗，是城口人民的骄傲。'},
   jincheng:{title:'锦城温泉',tags:['红军宿营地','天然温泉'],desc:'锦城温泉是城口镇天然温泉资源。1934年红军长征途经城口休整时，曾在此宿营。温泉为长途跋涉的红军战士提供了难得的休养条件，是红军与城口人民鱼水情深的见证。'},
@@ -1270,11 +1312,11 @@ document.querySelectorAll('.map-marker').forEach(function(m){
   </div>
   <div class="ai-msgs" id="aiMsgs"></div>
   <div class="ai-quick" id="aiQuick">
-    <button onclick="aiQuick('毛泽东在城口住在哪里')">毛泽东住哪</button>
-    <button onclick="aiQuick('打铁铺的故事')">打铁铺故事</button>
-    <button onclick="aiQuick('红军在城口休整了多久')">休整多久</button>
+    <button onclick="aiQuick('红五军什么时候到的城口')">红五军</button>
+    <button onclick="aiQuick('城口最早的红色政权')">最早政权</button>
+    <button onclick="aiQuick('将军桥的来历')">将军桥</button>
+    <button onclick="aiQuick('有几处革命遗址')">遗址数量</button>
     <button onclick="aiQuick('城口特支是什么')">城口特支</button>
-    <button onclick="aiQuick('铜鼓岭战役')">铜鼓岭</button>
   </div>
   <div class="ai-input-row">
     <input type="text" id="aiInput" placeholder="输入你的问题..." onkeydown="if(event.key==='Enter')sendAI()">
@@ -1512,17 +1554,24 @@ var kb=[
   {k:['休整','几天','多久','七天','停留','驻扎'],a:'1934年11月，中央红军突破国民党第二道封锁线后，在城口<b>休整了七天</b>。这七天里，红军补充物资、开展群众工作、宣传革命思想。八位元帅曾到访城口，毛泽东在此借宿一夜。这七天是长征路上的重要休整期。'},
   {k:['城口特支','特别支部','秘密联络','理发店','地下党','党员','14'],a:'<b>中共城口特别支部</b>成立于1930年10月，在胜一理发店设立秘密交通联络站。14名中共党员以理发、打铁、烧炭等职业为掩护，秘密开展革命工作。该支部在城口潜伏<b>四年</b>（1930-1934），是红军长征途经城口时的重要内应力量。'},
   {k:['铜鼓','岭','阻击','战役','烈士','牺牲','92','墓'],a:'<b>铜鼓岭阻击战</b>是红军长征突破第二道封锁线的重要战场。红军在此与敌军激战，<b>92位</b>红军战士壮烈牺牲，长眠于此。现建有铜鼓岭红军烈士纪念园，是重要的爱国主义教育基地。烈士们的英勇事迹永载史册。'},
-  {k:['谭甫仁','将军','中将','故居','出生'],a:'<b>谭甫仁</b>（1910-1970），中国人民解放军<b>开国中将</b>，城口镇人。其故居位于紫正街5号，是韶关唯一开国中将的出生地。故居为典型岭南风格建筑，青砖灰瓦，古朴典雅。谭甫仁将军一生为革命事业奋斗，是城口人民的骄傲。'},
+  {k:['谭甫仁','将军','中将','故居','出生'],a:'<b>谭甫仁</b>（1910-1970），中国人民解放军<b>开国中将</b>，城口镇人。其故居位于紫正街5号，是韶关唯一开国中将的出生地。故居为典型岭南风格建筑，青砖灰瓦，古朴典雅。1998年谭甫仁将军夫妇墓迁至城口鳌山水江寨，将军魂归故里。'},
   {k:['红军标语','墙','墨宝','标语'],a:'<b>红军标语墙</b>是1934年11月初红军过境城口时在墙面留下的墨宝标语。这面墙至今仍然可见，是城口珍贵的不可移动革命文物。标语见证了红军在城口开展群众宣传工作的历史。'},
   {k:['广兴','站','战役','战斗','封锁线','突破'],a:'<b>广兴站战役</b>是红军突破国民党第二道封锁线的关键战斗。1934年11月，中央红军在城口与敌军激战，成功突破封锁线，为长征的继续前进打开了通道。城口因此成为长征路上的重要节点。'},
-  {k:['三角坪','惩恶','恶霸','群众工作'],a:'<b>三角坪</b>是红五军在城口惩治恶霸地主的遗址。红军在此开展群众工作，打击反动势力，维护百姓利益，赢得了城口民众的拥护和支持。这体现了红军为人民服务的宗旨。'},
+  {k:['三角坪','惩恶','恶霸','群众工作'],a:'<b>三角坪</b>是1929年红五军在城口惩治恶霸地主的遗址。红军在此开展群众工作，打击反动势力，维护百姓利益，赢得了城口民众的拥护和支持。这体现了红军为人民服务的宗旨。'},
   {k:['故城','遗址','千年','宋代','古城'],a:'<b>故城遗址</b>承载着千年历史文脉，是粤北地区重要的历史文化遗存。城墙残垣、古街石板路诉说着往昔的辉煌。红军长征途经此地，古老的城池见证了这段红色历史，历史与革命在此交汇。'},
   {k:['锦城','温泉','宿营','休养'],a:'<b>锦城温泉</b>是城口镇天然温泉资源。1934年红军长征途经城口休整时，曾在此宿营。温泉为长途跋涉的红军战士提供了难得的休养条件，是红军与城口人民鱼水情深的见证。'},
-  {k:['大皇楼','盐铺','盐街','商贸','盐业'],a:'<b>大皇楼</b>位于老盐街，原为盐铺。城口镇历史上是粤湘通衢的商贸重镇，盐业贸易繁荣。红军长征途经时，盐铺为红军提供了物资补给，也是城口商贸文化的重要见证。'},
+  {k:['大皇楼','盐铺','盐街','商贸','盐业'],a:'<b>大皇楼</b>位于老盐街，原为盐铺。城口镇历史上是粤湘通衢的商贸重镇，盐业贸易繁荣。1929年红五军也曾在此采购物资。红军长征途经时，盐铺为红军提供了物资补给，也是城口商贸文化的重要见证。'},
   {k:['元帅','八位','几位','将帅'],a:'共有<b>八位元帅</b>曾到访城口，包括朱德、彭德怀、林彪、刘伯承、贺龙、罗荣桓、聂荣臻、叶剑英。这在中国革命史上是极为罕见的，充分说明城口在红军长征中的重要战略地位。'},
   {k:['长征','1934','封锁线','第二道'],a:'1934年11月，中央红军进行战略转移（长征），在城口突破国民党<b>第二道封锁线</b>。城口位于广东省韶关市仁化县，是粤北重镇。红军在此休整七天，补充物资，留下了丰富的红色遗迹。城口因此被称为"长征路上的隐秘坐标"。'},
-  {k:['红军街','街道','老街','600','商铺'],a:'<b>城口红军街</b>全长约600米，沿街有130多家商铺。这条老街保存了大量红色革命遗迹，包括广兴栈、胜一理发店、打铁铺等9处革命遗址。街道至今仍保留着当年的风貌，是城口红色文化的核心区域。'},
-  {k:['地图','遗址','几处','多少','分布'],a:'城口红军街共有<b>9处革命遗址</b>：①城口古秦城 ②胜一理发店 ③打铁铺 ④广兴栈（毛泽东旧居）⑤三角坪 ⑥谭甫仁将军故居 ⑦锦城温泉 ⑧大皇楼 ⑨红色标语墙。另有铜鼓岭阻击战遗址在镇附近。环道约1200米。'},
+  {k:['红军街','街道','老街','600','商铺'],a:'<b>城口红军街</b>全长约600米，沿街有130多家商铺。这条老街保存了大量红色革命遗迹，分布有14处革命遗址。街道至今仍保留着当年的风貌，是城口红色文化的核心区域。'},
+  {k:['地图','遗址','几处','多少','分布','14','19'],a:'城口镇共有<b>19处红色遗迹</b>，其中红军街核心区域分布<b>14处革命遗址</b>，分为三个历史时期：<br>• <b>早期革命（1926-1932）</b>：第二区苏维埃政府、将军桥、古寨城红五军宿营地<br>• <b>红军长征（1934）</b>：广兴栈、理发店、打铁铺、红一军团指挥部、杨茂利店等11处<br>• <b>战役纪念</b>：铜鼓岭阻击战遗址（92位烈士）<br>另有粤北纪念馆、谭甫仁将军墓等纪念场所。'},
+  {k:['红五军','彭德怀','滕代远','1929','五军'],a:'<b>1929年</b>，彭德怀、滕代远率<b>红五军</b>转战粤北途经城口，这是红军主力首次到达城口。红五军在<b>古寨城宿营</b>，在<b>老盐街盐铺采购物资</b>，在<b>三角坪惩治恶霸</b>，开展群众工作，宣传革命思想，播撒红色火种。这比1934年中央红军长征早了5年。'},
+  {k:['苏维埃','第二区','1926','最早','政权'],a:'<b>第二区苏维埃政府</b>成立于<b>1926年</b>，位于城群村紫震街，是城口最早的红色政权组织。它见证了大革命时期城口人民的革命斗争，是城口红色历史的起点，比红军长征经过城口早了整整8年。'},
+  {k:['将军桥','朱德','陈毅','1927','南昌起义'],a:'<b>城口将军桥</b>位于城群村大河背水。<b>1927年</b>，朱德、陈毅率南昌起义军余部南下途经城口，在这座桥上留下了革命足迹。为纪念这段历史，当地群众将此桥称为<b>将军桥</b>。这是朱德元帅与城口的最早交集。'},
+  {k:['红一军团','指挥部','祖堂坪','军团'],a:'<b>红一军团指挥部</b>遗址位于镇区祖堂坪。1934年11月红军长征突破第二道封锁线时，红一军团指挥部设在此处。这里是红军指挥作战、部署休整的核心场所，见证了长征路上的重要决策。'},
+  {k:['杨茂利','筹款','筹粮','物资','捐款'],a:'<b>杨茂利店</b>位于正龙街30号，是1934年红军长征途经城口时的<b>筹款处</b>。红军在此向开明绅士和商人筹粮筹款，补充军需物资。城口人民大力支持红军，为长征胜利贡献了力量，体现了军民鱼水情深。'},
+  {k:['粤北纪念馆','纪念馆','2017','博物馆'],a:'<b>红军长征粤北纪念馆</b>位于城口镇，与红军街隔河相望，是<b>广东省唯一以红军长征为主题</b>的纪念馆。2017年奠基，建筑面积5583㎡。馆内展示红军长征途经粤北的光辉历史，是重要的爱国主义教育基地。'},
+  {k:['几个时期','三个时期','历史时期','阶段'],a:'城口的红色历史跨越<b>三个重要时期</b>：<br>① <b>早期革命时期（1926-1932）</b>：苏维埃政府成立、朱德陈毅途经、红五军转战、城口特支成立<br>② <b>红军长征时期（1934）</b>：突破第二道封锁线、七天休整、铜鼓岭阻击战<br>③ <b>传承发展时期（至今）</b>：谭甫仁将军墓迁回、粤北纪念馆建成、红色遗迹数字化保护'}
 ];
 
 // 智能匹配
@@ -1539,14 +1588,14 @@ function matchKB(q){
   }
   if(best&&bestScore>0)return best.a;
   // 默认回复
-  return '抱歉，我暂时无法回答这个问题。你可以试试问我：<br>• "毛泽东在城口住在哪里？"<br>• "打铁铺的故事"<br>• "红军在城口休整了多久？"<br>• "城口特支是什么？"<br>• "铜鼓岭战役"<br>• "有几位元帅到过城口？"';
+  return '抱歉，我暂时无法回答这个问题。你可以试试问我：<br>• "红五军什么时候到的城口？"<br>• "城口最早的红色政权是什么？"<br>• "将军桥的来历"<br>• "有几处革命遗址？"<br>• "三个历史时期"<br>• "铜鼓岭战役牺牲了多少人？"';
 }
 
 function toggleAI(){
   aiPanel.classList.toggle('show');
   if(aiPanel.classList.contains('show')&&aiMsgs.children.length===0){
     setTimeout(function(){
-      addBotMsg('你好！我是<b>红色文化AI助手</b> 🤖<br>关于城口红军街的任何问题都可以问我，比如：<br>• 毛泽东在城口住在哪里？<br>• 打铁铺有什么故事？<br>• 红军在城口休整了多久？<br>• 铜鼓岭战役牺牲了多少人？');
+      addBotMsg('你好！我是<b>红色文化AI助手</b> 🤖<br>关于城口红军街的任何问题都可以问我，比如：<br>• 红五军什么时候到的城口？<br>• 城口最早的红色政权是什么？<br>• 将军桥的来历<br>• 有几处革命遗址？<br>• 铜鼓岭战役牺牲了多少人？');
     },300);
   }
 }

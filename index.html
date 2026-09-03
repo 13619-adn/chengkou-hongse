@@ -135,9 +135,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .map-marker:hover{transform:scale(1.15)}
 .map-marker .pulse{animation:mapPulse 2s ease-out infinite;transform-origin:center}
 @keyframes mapPulse{0%{opacity:.8;r:14}100%{opacity:0;r:28}}
-.map-legend{position:absolute;top:12px;right:12px;background:rgba(26,26,26,.88);color:#fff;padding:12px 14px;border-radius:8px;font-size:12px;backdrop-filter:blur(4px);max-width:140px}
-.map-legend .lg-item{display:flex;align-items:center;gap:6px;margin:4px 0}
-.map-legend .lg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .map-detail{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;padding:24px 20px 16px;transform:translateY(100%);transition:.3s;pointer-events:none}
 .map-detail.show{transform:translateY(0);pointer-events:auto}
 .map-detail h4{font-size:16px;margin-bottom:6px;color:#ffdd55}
@@ -1080,15 +1077,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
         <text x="20" y="528" fill="#8A6A4A" font-size="9" opacity=".5">1934年11月 · 中央红军在此突破第二道封锁线 · 休整七天</text>
         <text x="20" y="545" fill="#8A6A4A" font-size="9" opacity=".5">★ 铜鼓岭阻击战遗址距镇区约3公里</text>
       </svg>
-
-      <div class="map-legend">
-        <div style="font-weight:700;margin-bottom:6px;font-size:13px">图例</div>
-        <div class="lg-item"><div class="lg-dot" style="background:#C0212B"></div>革命遗址</div>
-        <div class="lg-item"><div class="lg-dot" style="background:#7A0F16"></div>战斗遗址</div>
-        <div class="lg-item"><div class="lg-dot" style="background:#5BA3D0"></div>九龙江</div>
-        <div class="lg-item"><div class="lg-dot" style="background:#8B2020"></div>纪念馆</div>
-        <div class="lg-item"><div class="lg-dot" style="background:#D4B870"></div>红军街</div>
-      </div>
 
       <div class="map-detail" id="mapDetail">
         <button class="map-close" onclick="closeMapDetail()">×</button>

@@ -1,5 +1,5 @@
 // Service Worker - 城口红迹数字云展厅 PWA
-var CACHE='chengkou-v4';
+var CACHE='chengkou-v5';
 var ASSETS=[
   'https://13619-adn.github.io/chengkou-hongse/',
   'https://13619-adn.github.io/chengkou-hongse/index.html',

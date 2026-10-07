@@ -1,10 +1,10 @@
 // Service Worker - 城口红迹数字云展厅 PWA
-var CACHE='chengkou-v6';
+var CACHE='chengkou-v7';
 var ASSETS=[
   'https://13619-adn.github.io/chengkou-hongse/',
   'https://13619-adn.github.io/chengkou-hongse/index.html',
   'https://13619-adn.github.io/chengkou-hongse/manifest.json',
-  'https://13619-adn.github.io/chengkou-hongse/narration_test_cut.m4a?v=28',
+  'https://13619-adn.github.io/chengkou-hongse/narration_28min.m4a',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js'

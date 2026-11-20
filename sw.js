@@ -1,10 +1,12 @@
 // Service Worker - 城口红迹数字云展厅 PWA
-var CACHE='chengkou-v13';
+var CACHE='chengkou-v14';
 var ASSETS=[
   'https://13619-adn.github.io/chengkou-hongse/',
   'https://13619-adn.github.io/chengkou-hongse/index.html',
   'https://13619-adn.github.io/chengkou-hongse/manifest.json',
-  'https://13619-adn.github.io/chengkou-hongse/work-info.html'
+  'https://13619-adn.github.io/chengkou-hongse/work-info.html',
+  'https://13619-adn.github.io/chengkou-hongse/vendor/leaflet/leaflet.css',
+  'https://13619-adn.github.io/chengkou-hongse/vendor/leaflet/leaflet.js'
 ];
 
 // 安装：缓存核心资源

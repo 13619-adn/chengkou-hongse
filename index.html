@@ -133,6 +133,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .map-scroll.modal~.map-modal-tip{display:block;position:fixed;top:22px;left:16px;z-index:1501;color:rgba(255,255,255,.72);font-size:12px;letter-spacing:1px}
 body.map-modal-open{overflow:hidden}
 .map-zoom-btn{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;padding:4px 10px;border-radius:12px;cursor:pointer;font-family:inherit}
+.map-zones{display:none}
+@media(max-width:768px){
+  .map-zones{display:flex;gap:8px;margin:0 0 10px}
+  .map-zones button{flex:1;padding:7px 0;border-radius:14px;border:1px solid rgba(192,33,43,.3);background:#fff;color:var(--red);font-size:12px;font-family:inherit}
+  .map-zones button.active{background:var(--red);color:#fff;border-color:var(--red)}
+}
 #leaflet-map{width:100%;height:450px;border-radius:var(--radius);z-index:1}
 .leaflet-map-wrap{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:16px}
 .map-switch{display:flex;gap:8px;margin-bottom:12px}
@@ -1066,6 +1072,11 @@ body.tour-open .ai-fab,body.tour-open .back-top{opacity:0;pointer-events:none}
     </div>
 
     <div class="map-container" id="schematicMapWrap" style="margin-top:20px;display:none">
+      <div class="map-zones" id="mapZones">
+        <button onclick="setMapZone(0)">西段</button>
+        <button class="active" onclick="setMapZone(1)">中段</button>
+        <button onclick="setMapZone(2)">东段</button>
+      </div>
       <div class="map-scroll">
       <svg class="map-svg" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -1389,10 +1400,35 @@ function showMapDetail(id){
 function closeMapDetail(){
   document.getElementById('mapDetail').classList.remove('show');
 }
+var mapZone=1;
+function applyMapView(){
+  var wrap=document.getElementById('schematicMapWrap');
+  if(!wrap)return;
+  var svg=wrap.querySelector('.map-svg');
+  var ms=wrap.querySelector('.map-scroll');
+  var isModal=ms.classList.contains('modal');
+  var isMobile=window.innerWidth<=768;
+  if(isModal||!isMobile){svg.setAttribute('viewBox','0 0 900 560');}
+  else{svg.setAttribute('viewBox',(mapZone*300)+' 40 300 480');}
+  var tabs=document.querySelectorAll('#mapZones button');
+  for(var i=0;i<tabs.length;i++){tabs[i].classList.toggle('active',i===mapZone);}
+}
+function setMapZone(i){
+  mapZone=i;
+  applyMapView();
+  closeMapDetail();
+  var ms=document.querySelector('#schematicMapWrap .map-scroll');
+  if(ms)ms.scrollTop=0;
+}
+window.addEventListener('resize',function(){
+  clearTimeout(window.__mzTimer);
+  window.__mzTimer=setTimeout(applyMapView,150);
+});
 function openMapModal(){
   var ms=document.querySelector('#schematicMapWrap .map-scroll');
   ms.classList.add('modal');
   document.body.classList.add('map-modal-open');
+  applyMapView();
   requestAnimationFrame(function(){
     ms.scrollLeft=(ms.scrollWidth-ms.clientWidth)/2;
     ms.scrollTop=(ms.scrollHeight-ms.clientHeight)/2;
@@ -1402,9 +1438,11 @@ function closeMapModal(){
   var ms=document.querySelector('#schematicMapWrap .map-scroll');
   ms.classList.remove('modal');
   document.body.classList.remove('map-modal-open');
+  applyMapView();
   ms.scrollLeft=0;ms.scrollTop=0;
 }
 // 地图标记点击由 onclick 处理，避免 touchstart 阻断页面滚动
+applyMapView();
 </script>
 
 <!-- 红色文化知识问答 -->

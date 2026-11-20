@@ -106,6 +106,7 @@
 </div>
 
 <div class="tools">
+  <button class="tool" id="btnTour" onclick="togglePartTour()" title="自动巡览构件">巡览</button>
   <button class="tool" id="btnRotate" onclick="toggleAutoRotate()" title="自动旋转">旋转</button>
   <button class="tool" id="btnRoof" onclick="toggleRoof()" title="屋顶显隐">屋顶</button>
   <button class="tool" id="btnNight" onclick="toggleNight()" title="昼夜切换">昼</button>
@@ -117,7 +118,7 @@
   <p id="infoDesc"></p>
 </div>
 
-<div class="hint" id="hint">拖动旋转 · 双指缩放 · 点击构件查看说明</div>
+<div class="hint" id="hint">拖动旋转 · 双指缩放 · 点击构件查看说明 · 右侧可自动巡览</div>
 
 <script>
 /* ============================================================
@@ -128,6 +129,8 @@
 var scene, camera, renderer, controls, raycaster, pointer;
 var building, roofGroup, modelRoot;
 var autoRotate = true, roofVisible = true, nightMode = false;
+var partTourOn = false, partTourTimer = null, partTourIndex = 0;
+var PART_TOUR = ['base','pillar','wall','door','window','beam','sign','roof','interior'];
 var sunLight, hemiLight, lanternLights = [], ambientLight;
 var pickedParts = [];
 
@@ -701,6 +704,33 @@ function focusPart(key){
   document.getElementById('btnRotate').classList.remove('on');
 }
 
+/* ---------- 构件自动巡览 ---------- */
+function togglePartTour(){
+  if (partTourOn){ stopPartTour(); return; }
+  partTourOn = true;
+  partTourIndex = 0;
+  var btn = document.getElementById('btnTour');
+  if (btn){ btn.textContent = '停止'; btn.classList.add('on'); }
+  stepPartTour();
+  partTourTimer = setInterval(stepPartTour, 4500);
+}
+function stepPartTour(){
+  if (!partTourOn) return;
+  if (partTourIndex >= PART_TOUR.length){
+    stopPartTour();
+    resetView();
+    return;
+  }
+  focusPart(PART_TOUR[partTourIndex]);
+  partTourIndex++;
+}
+function stopPartTour(){
+  partTourOn = false;
+  if (partTourTimer){ clearInterval(partTourTimer); partTourTimer = null; }
+  var btn = document.getElementById('btnTour');
+  if (btn){ btn.textContent = '巡览'; btn.classList.remove('on'); }
+}
+
 var camAnim = null;
 function animateCamera(pos, target){
   camAnim = {
@@ -713,6 +743,7 @@ function animateCamera(pos, target){
 }
 
 function onPointerDown(e){
+  if (partTourOn) stopPartTour();
   var rect = renderer.domElement.getBoundingClientRect();
   pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
   pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
@@ -774,6 +805,7 @@ function toggleNight(){
 }
 
 function resetView(){
+  if (partTourOn) stopPartTour();
   autoRotate = true;
   controls.autoRotate = true;
   document.getElementById('btnRotate').classList.add('on');

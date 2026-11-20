@@ -127,6 +127,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 #leaflet-map{width:100%;height:450px;border-radius:var(--radius);z-index:1}
 .leaflet-map-wrap{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:16px}
 .map-switch{display:flex;gap:8px;margin-bottom:12px}
+.map-offline-tip{display:none;margin-bottom:12px;padding:9px 14px;border-radius:8px;background:rgba(192,33,43,.08);border-left:3px solid var(--red);color:#8a4a4a;font-size:12px;line-height:1.6}
+.map-offline-tip.show{display:block}
 .map-switch button{padding:6px 14px;border-radius:16px;border:2px solid var(--red);background:transparent;color:var(--red);font-size:12px;cursor:pointer;font-weight:600;transition:.2s}
 .map-switch button.active{background:var(--red);color:#fff}
 .leaflet-popup-content h4{margin:0 0 4px;color:var(--red);font-size:14px}
@@ -154,6 +156,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 #about{padding:60px 0;text-align:center;background:var(--red-dark);color:#fff}
 #about h2{font-size:28px;font-weight:800;margin-bottom:16px}
 #about p{font-size:15px;color:rgba(255,255,255,.8);max-width:600px;margin:0 auto 12px}
+#about .about-links{margin-top:20px}
+#about .about-links a{display:inline-block;padding:8px 18px;border:1px solid rgba(212,162,76,.5);border-radius:20px;color:var(--gold);font-size:13px;text-decoration:none;transition:.2s}
+#about .about-links a:hover{background:rgba(212,162,76,.12)}
 
 /* 响应式 */
 @media(max-width:768px){
@@ -193,6 +198,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .ap-bar-fill{height:100%;background:linear-gradient(90deg,var(--red),#FFD700);border-radius:2px;width:0%;transition:.1s}
 .ap-bar:hover .ap-bar-fill{height:6px;margin-top:-1px}
 .ap-info{font-size:11px;color:#888;margin-top:4px}
+.ap-extra{display:flex;gap:8px;margin-top:8px}
+.ap-chip{padding:5px 12px;border-radius:14px;border:1px solid rgba(255,215,0,.35);background:rgba(255,255,255,.06);color:#FFD700;font-size:11px;cursor:pointer;font-family:inherit;transition:.2s}
+.ap-chip:active{background:rgba(255,215,0,.2)}
 
 /* 返回顶部按钮 */
 .back-top{position:fixed;bottom:80px;right:16px;width:44px;height:44px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:20px;cursor:pointer;z-index:999;opacity:0;transform:translateY(20px);transition:.3s;box-shadow:0 4px 16px rgba(192,33,43,.4);display:flex;align-items:center;justify-content:center}
@@ -269,6 +277,8 @@ body.tour-open .ai-fab,body.tour-open .back-top{opacity:0;pointer-events:none}
 .ai-msg.bot{align-self:flex-start;background:#fff;border:1px solid #e8e4dd;color:#333;border-bottom-left-radius:4px}
 .ai-msg.user{align-self:flex-end;background:var(--red);color:#fff;border-bottom-right-radius:4px}
 .ai-msg.bot b{color:var(--red)}
+.ai-cite{margin-top:9px;padding-top:8px;border-top:1px dashed rgba(0,0,0,.12);font-size:11px;color:#999;line-height:1.7}
+.ai-cite button{padding:0;border:none;background:none;color:var(--red);font-size:11px;font-family:inherit;cursor:pointer;text-decoration:underline}
 .ai-typing{align-self:flex-start;display:flex;gap:4px;padding:12px 16px}
 .ai-typing span{width:8px;height:8px;background:#bbb;border-radius:50%;animation:typing 1.4s infinite}
 .ai-typing span:nth-child(2){animation-delay:.2s}
@@ -288,8 +298,8 @@ body.tour-open .ai-fab,body.tour-open .back-top{opacity:0;pointer-events:none}
   .ai-fab{right:16px;bottom:140px}
 }
 </style>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
+<script src="vendor/leaflet/leaflet.js"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#C0212B">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1038,12 +1048,13 @@ body.tour-open .ai-fab,body.tour-open .back-top{opacity:0;pointer-events:none}
       <button class="active" onclick="switchMap('real')">真实地图</button>
       <button onclick="switchMap('schematic')">示意图</button>
     </div>
+    <div class="map-offline-tip" id="mapOfflineTip">当前网络无法加载在线地图，已自动切换为示意图，遗址信息不受影响。</div>
 
     <div class="leaflet-map-wrap" id="realMapWrap">
       <div id="leaflet-map"></div>
       <div class="map-info">
         <span>点击地图标记查看详情 · 可缩放拖拽</span>
-        <span class="hint">真实卫星定位</span>
+        <span class="hint">在线地图瓦片</span>
       </div>
     </div>
 
@@ -1200,6 +1211,7 @@ body.tour-open .ai-fab,body.tour-open .back-top{opacity:0;pointer-events:none}
     <h2>城口红迹</h2>
     <p>城口镇位于广东省韶关市仁化县，是红军长征途经的重要节点。1934年11月，中央红军在此突破第二道封锁线，休整七天，留下了丰富的红色遗迹。</p>
     <p>本数字云展厅致力于以数字化方式保护和传承城口红色文化遗产。</p>
+    <p class="about-links"><a href="work-info.html">作品信息 · 技术说明与更新记录 →</a></p>
   </div>
 </section>
 
@@ -1262,13 +1274,26 @@ function switchMap(type){
     btns[0].classList.remove('active');btns[1].classList.add('active');
   }
 }
+function autoSchematicMap(){
+  if(window._mapFallbackDone)return;
+  window._mapFallbackDone=true;
+  switchMap('schematic');
+  var tip=document.getElementById('mapOfflineTip');
+  if(tip)tip.classList.add('show');
+}
 // Leaflet 真实地图
 function initLeafletMap(){
   if(window._leafletMap)return;
   var map=L.map('leaflet-map',{zoomControl:true,scrollWheelZoom:false}).setView([25.3175,113.7375],16);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  var tiles=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
     maxZoom:19,attribution:'© OpenStreetMap'
-  }).addTo(map);
+  });
+  var tileErrors=0;
+  tiles.on('tileerror',function(){
+    tileErrors++;
+    if(tileErrors>=3)autoSchematicMap();
+  });
+  tiles.addTo(map);
   window._leafletMap=map;
 
   var redIcon=L.divIcon({className:'leaflet-red-marker',html:'<div style="background:#C0212B;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.4)"></div>',iconSize:[24,24],iconAnchor:[12,24]});
@@ -1336,7 +1361,12 @@ function initLeafletMap(){
 // 延迟初始化Leaflet（等库加载完）
 setTimeout(function(){
   if(typeof L!=='undefined'){initLeafletMap();}
-  else{setTimeout(initLeafletMap,500);}
+  else{
+    setTimeout(function(){
+      if(typeof L!=='undefined')initLeafletMap();
+      else autoSchematicMap();
+    },800);
+  }
 },300);
 // 地图交互
 var mapData={
@@ -1432,6 +1462,10 @@ document.querySelectorAll('.map-marker').forEach(function(m){
     </div>
   </div>
   <div class="ap-info" id="apInfo">点击播放按钮开始收听 · 可边浏览边听</div>
+  <div class="ap-extra">
+    <button class="ap-chip" id="apRate" onclick="cycleRate()" title="切换播放速度">1.0×</button>
+    <button class="ap-chip" onclick="previewAudio()">试听60秒</button>
+  </div>
 </div>
 <audio id="narrationAudio" preload="metadata">
   <source src="narration_28min.m4a" type="audio/mp4">
@@ -1506,6 +1540,7 @@ function seekAudio(e){
     setAudioInfo('录音尚未加载完成，请稍候');
     return;
   }
+  clearPreview();
   var bar=document.getElementById('apBar');
   var rect=bar.getBoundingClientRect();
   var pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
@@ -1516,6 +1551,39 @@ function fmtTime(s){
   var m=Math.floor(s/60);
   var sec=Math.floor(s%60);
   return m+':'+(sec<10?'0'+sec:sec);
+}
+var previewTimer=null,previewActive=false;
+function clearPreview(){
+  if(previewTimer){clearTimeout(previewTimer);previewTimer=null;}
+  previewActive=false;
+}
+function cycleRate(){
+  var rates=[1,1.25,1.5];
+  var i=rates.indexOf(audioEl.playbackRate);
+  var next=rates[(i+1)%rates.length];
+  audioEl.playbackRate=next;
+  document.getElementById('apRate').textContent=(next===1?'1.0':String(next))+'×';
+}
+function previewAudio(){
+  if(audioEl.error)audioEl.load();
+  clearPreview();
+  audioEl.currentTime=0;
+  previewActive=true;
+  var playPromise=audioEl.play();
+  if(playPromise&&playPromise.catch){
+    playPromise.catch(function(err){
+      if(err&&err.name==='AbortError')return;
+      clearPreview();
+      playBtn.textContent='▶';
+      setAudioInfo('录音暂时无法播放，请检查网络或更换 Safari、Chrome 浏览器');
+    });
+  }
+  previewTimer=setTimeout(function(){
+    previewActive=false;
+    previewTimer=null;
+    if(!audioEl.paused)audioEl.pause();
+    setTimeout(function(){setAudioInfo('试听结束 · 点击播放继续收听');},80);
+  },60000);
 }
 audioEl.addEventListener('timeupdate',function(){
   if(isFinite(audioEl.duration)&&audioEl.duration>0){
@@ -1530,10 +1598,15 @@ audioEl.addEventListener('loadedmetadata',function(){
 });
 audioEl.addEventListener('play',function(){
   playBtn.textContent='⏸';
-  setAudioInfo('正在播放 · 可边浏览边听');
+  setAudioInfo(previewActive?'试听60秒 · 到点自动暂停':'正在播放 · 可边浏览边听');
 });
 audioEl.addEventListener('pause',function(){
   playBtn.textContent='▶';
+  if(previewActive){
+    clearPreview();
+    setAudioInfo('试听已暂停 · 点击播放继续收听');
+    return;
+  }
   if(!audioEl.ended)setAudioInfo('已暂停 · 点击继续收听');
 });
 audioEl.addEventListener('waiting',function(){
@@ -1547,6 +1620,7 @@ audioEl.addEventListener('error',function(){
   setAudioInfo('录音加载失败，请检查网络后点击播放重试');
 });
 audioEl.addEventListener('ended',function(){
+  clearPreview();
   playBtn.textContent='▶';
   barFill.style.width='0%';
   curTime.textContent='0:00';
@@ -1791,29 +1865,29 @@ var aiInput=document.getElementById('aiInput');
 
 // 知识库
 var kb=[
-  {k:['毛泽东','住','哪里','广兴栈','借宿','旧居'],a:'毛泽东在城口期间借宿于<b>广兴栈</b>（位于正龙街，临街而设）。1934年11月，红军长征途经城口休整期间，毛泽东在此居住办公。经过修缮的广兴栈遗址再现了毛泽东居住时的场景，是城口红色文化最重要的遗址之一。'},
-  {k:['打铁','铺','铁匠','故事','交通站','秘密'],a:'<b>打铁铺</b>是胜一理发店隔壁的铁匠铺，当年同为地下交通站。站内同志以打铁身份从事秘密工作，传递情报、掩护同志。如今以人物塑像形式还原当年场景：师徒二人挥锤打铁，炉火仿佛至今不熄。打铁铺的炉火不灭，军民鱼水情长。'},
-  {k:['休整','几天','多久','七天','停留','驻扎'],a:'1934年11月，中央红军突破国民党第二道封锁线后，在城口<b>休整了七天</b>。这七天里，红军补充物资、开展群众工作、宣传革命思想。八位元帅曾到访城口，毛泽东在此借宿一夜。这七天是长征路上的重要休整期。'},
-  {k:['城口特支','特别支部','秘密联络','理发店','地下党','党员','14'],a:'<b>中共城口特别支部</b>成立于1930年10月，在胜一理发店设立秘密交通联络站。14名中共党员以理发、打铁、烧炭等职业为掩护，秘密开展革命工作。该支部在城口潜伏<b>四年</b>（1930-1934），是红军长征途经城口时的重要内应力量。'},
-  {k:['铜鼓','岭','阻击','战役','烈士','牺牲','92','墓'],a:'<b>铜鼓岭阻击战</b>是红军长征突破第二道封锁线的重要战场。红军在此与敌军激战，<b>92位</b>红军战士壮烈牺牲，长眠于此。现建有铜鼓岭红军烈士纪念园，是重要的爱国主义教育基地。烈士们的英勇事迹永载史册。'},
-  {k:['谭甫仁','将军','中将','故居','出生'],a:'<b>谭甫仁</b>（1910-1970），中国人民解放军<b>开国中将</b>，城口镇人。其故居位于紫震街5号，是韶关唯一开国中将的出生地。故居为典型岭南风格建筑，青砖灰瓦，古朴典雅。1998年谭甫仁将军夫妇墓迁至城口鳌山水江寨，将军魂归故里。'},
-  {k:['红军标语','墙','墨宝','标语'],a:'<b>红军标语墙</b>是1934年11月初红军过境城口时在墙面留下的墨宝标语。这面墙至今仍然可见，是城口珍贵的不可移动革命文物。标语见证了红军在城口开展群众宣传工作的历史。'},
-  {k:['胜一','理发店','剪发','工具','暗格','职业掩护'],a:'<b>胜一理发店</b>是中共城口特别支部设立的秘密交通联络站。1930年10月，14名中共党员以理发、打铁、烧炭等职业为掩护，在此秘密开展革命工作。理发店保持原貌，至今仍可见当年的理发工具和暗格，是城口珍贵的革命遗址。'},
-  {k:['三角坪','惩恶','恶霸','群众工作'],a:'<b>三角坪</b>是1929年红五军在城口惩治恶霸地主的遗址。红军在此开展群众工作，打击反动势力，维护百姓利益，赢得了城口民众的拥护和支持。这体现了红军为人民服务的宗旨。'},
-  {k:['故城','遗址','千年','宋代','古城'],a:'<b>故城遗址</b>承载着千年历史文脉，是粤北地区重要的历史文化遗存。城墙残垣、古街石板路诉说着往昔的辉煌。红军长征途经此地，古老的城池见证了这段红色历史，历史与革命在此交汇。'},
-  {k:['锦城','温泉','宿营','休养'],a:'<b>锦城温泉</b>是城口镇天然温泉资源。1934年红军长征途经城口休整时，曾在此宿营。温泉为长途跋涉的红军战士提供了难得的休养条件，是红军与城口人民鱼水情深的见证。'},
-  {k:['大皇楼','盐铺','盐街','商贸','盐业'],a:'<b>大皇楼</b>位于老盐街，原为盐铺。城口镇历史上是粤湘通衢的商贸重镇，盐业贸易繁荣。1929年红五军也曾在此采购物资。红军长征途经时，盐铺为红军提供了物资补给，也是城口商贸文化的重要见证。'},
-  {k:['元帅','八位','几位','将帅'],a:'共有<b>八位元帅</b>曾到访城口，包括朱德、彭德怀、林彪、刘伯承、贺龙、罗荣桓、聂荣臻、叶剑英。这在中国革命史上是极为罕见的，充分说明城口在红军长征中的重要战略地位。'},
-  {k:['长征','1934','封锁线','第二道'],a:'1934年11月，中央红军进行战略转移（长征），在城口突破国民党<b>第二道封锁线</b>。城口位于广东省韶关市仁化县，是粤北重镇。红军在此休整七天，补充物资，留下了丰富的红色遗迹。城口因此被称为"长征路上的隐秘坐标"。'},
-  {k:['红军街','街道','老街','600','商铺'],a:'<b>城口红军街</b>全长约600米，沿街有130多家商铺。这条老街保存了大量红色革命遗迹，分布有14处革命遗址。街道至今仍保留着当年的风貌，是城口红色文化的核心区域。'},
-  {k:['地图','遗址','几处','多少','分布','14','19'],a:'城口镇共有<b>19处红色遗迹</b>，其中红军街核心区域分布<b>14处革命遗址</b>，分为三个历史时期：<br>• <b>早期革命（1926-1932）</b>：第二区苏维埃政府、将军桥、古寨城红五军宿营地<br>• <b>红军长征（1934）</b>：广兴栈、理发店、打铁铺、红一军团指挥部、杨茂利店等11处<br>• <b>战役纪念</b>：铜鼓岭阻击战遗址（92位烈士）<br>另有粤北纪念馆、谭甫仁将军墓等纪念场所。'},
-  {k:['红五军','彭德怀','滕代远','1929','五军'],a:'<b>1929年</b>，彭德怀、滕代远率<b>红五军</b>转战粤北途经城口，这是红军主力首次到达城口。红五军在<b>古寨城宿营</b>，在<b>老盐街盐铺采购物资</b>，在<b>三角坪惩治恶霸</b>，开展群众工作，宣传革命思想，播撒红色火种。这比1934年中央红军长征早了5年。'},
-  {k:['苏维埃','第二区','1926','最早','政权'],a:'<b>第二区苏维埃政府</b>成立于<b>1926年</b>，位于城群村紫震街，是城口最早的红色政权组织。它见证了大革命时期城口人民的革命斗争，是城口红色历史的起点，比红军长征经过城口早了整整8年。'},
-  {k:['将军桥','朱德','陈毅','1927','南昌起义'],a:'<b>城口将军桥</b>位于城群村大河背水。<b>1927年</b>，朱德、陈毅率南昌起义军余部南下途经城口，在这座桥上留下了革命足迹。为纪念这段历史，当地群众将此桥称为<b>将军桥</b>。这是朱德元帅与城口的最早交集。'},
-  {k:['红一军团','指挥部','祖堂坪','军团'],a:'<b>红一军团指挥部</b>遗址位于镇区祖堂坪。1934年11月红军长征突破第二道封锁线时，红一军团指挥部设在此处。这里是红军指挥作战、部署休整的核心场所，见证了长征路上的重要决策。'},
-  {k:['杨茂利','筹款','筹粮','物资','捐款'],a:'<b>杨茂利店</b>位于正龙街30号，是1934年红军长征途经城口时的<b>筹款处</b>。红军在此向开明绅士和商人筹粮筹款，补充军需物资。城口人民大力支持红军，为长征胜利贡献了力量，体现了军民鱼水情深。'},
-  {k:['粤北纪念馆','纪念馆','2017','博物馆'],a:'<b>红军长征粤北纪念馆</b>位于城口镇，与红军街隔河相望，是<b>广东省唯一以红军长征为主题</b>的纪念馆。2017年奠基，建筑面积5583㎡。馆内展示红军长征途经粤北的光辉历史，是重要的爱国主义教育基地。'},
-  {k:['几个时期','三个时期','历史时期','阶段'],a:'城口的红色历史跨越<b>三个重要时期</b>：<br>① <b>早期革命时期（1926-1932）</b>：苏维埃政府成立、朱德陈毅途经、红五军转战、城口特支成立<br>② <b>红军长征时期（1934）</b>：突破第二道封锁线、七天休整、铜鼓岭阻击战<br>③ <b>传承发展时期（至今）</b>：谭甫仁将军墓迁回、粤北纪念馆建成、红色遗迹数字化保护'}
+  {k:['毛泽东','住','哪里','广兴栈','借宿','旧居'],a:'毛泽东在城口期间借宿于<b>广兴栈</b>（位于正龙街，临街而设）。1934年11月，红军长征途经城口休整期间，毛泽东在此居住办公。经过修缮的广兴栈遗址再现了毛泽东居住时的场景，是城口红色文化最重要的遗址之一。',s:'#hall-5',n:'广兴栈'},
+  {k:['打铁','铺','铁匠','故事','交通站','秘密'],a:'<b>打铁铺</b>是胜一理发店隔壁的铁匠铺，当年同为地下交通站。站内同志以打铁身份从事秘密工作，传递情报、掩护同志。如今以人物塑像形式还原当年场景：师徒二人挥锤打铁，炉火仿佛至今不熄。打铁铺的炉火不灭，军民鱼水情长。',s:'#hall-7',n:'打铁铺'},
+  {k:['休整','几天','多久','七天','停留','驻扎'],a:'1934年11月，中央红军突破国民党第二道封锁线后，在城口<b>休整了七天</b>。这七天里，红军补充物资、开展群众工作、宣传革命思想。八位元帅曾到访城口，毛泽东在此借宿一夜。这七天是长征路上的重要休整期。',s:'#timeline',n:'历史时间轴'},
+  {k:['城口特支','特别支部','秘密联络','理发店','地下党','党员','14'],a:'<b>中共城口特别支部</b>成立于1930年10月，在胜一理发店设立秘密交通联络站。14名中共党员以理发、打铁、烧炭等职业为掩护，秘密开展革命工作。该支部在城口潜伏<b>四年</b>（1930-1934），是红军长征途经城口时的重要内应力量。',s:'#hall-6',n:'胜一理发店'},
+  {k:['铜鼓','岭','阻击','战役','烈士','牺牲','92','墓'],a:'<b>铜鼓岭阻击战</b>是红军长征突破第二道封锁线的重要战场。红军在此与敌军激战，<b>92位</b>红军战士壮烈牺牲，长眠于此。现建有铜鼓岭红军烈士纪念园，是重要的爱国主义教育基地。烈士们的英勇事迹永载史册。',s:'#hall-1',n:'铜鼓岭战役纪念碑'},
+  {k:['谭甫仁','将军','中将','故居','出生'],a:'<b>谭甫仁</b>（1910-1970），中国人民解放军<b>开国中将</b>，城口镇人。其故居位于紫震街5号，是韶关唯一开国中将的出生地。故居为典型岭南风格建筑，青砖灰瓦，古朴典雅。1998年谭甫仁将军夫妇墓迁至城口鳌山水江寨，将军魂归故里。',s:'#hall-4',n:'谭甫仁将军故居'},
+  {k:['红军标语','墙','墨宝','标语'],a:'<b>红军标语墙</b>是1934年11月初红军过境城口时在墙面留下的墨宝标语。这面墙至今仍然可见，是城口珍贵的不可移动革命文物。标语见证了红军在城口开展群众宣传工作的历史。',s:'#hall-3',n:'红军标语墙'},
+  {k:['胜一','理发店','剪发','工具','暗格','职业掩护'],a:'<b>胜一理发店</b>是中共城口特别支部设立的秘密交通联络站。1930年10月，14名中共党员以理发、打铁、烧炭等职业为掩护，在此秘密开展革命工作。理发店保持原貌，至今仍可见当年的理发工具和暗格，是城口珍贵的革命遗址。',s:'#hall-6',n:'胜一理发店'},
+  {k:['三角坪','惩恶','恶霸','群众工作'],a:'<b>三角坪</b>是1929年红五军在城口惩治恶霸地主的遗址。红军在此开展群众工作，打击反动势力，维护百姓利益，赢得了城口民众的拥护和支持。这体现了红军为人民服务的宗旨。',s:'#map-section',n:'数字地图'},
+  {k:['故城','遗址','千年','宋代','古城'],a:'<b>故城遗址</b>承载着千年历史文脉，是粤北地区重要的历史文化遗存。城墙残垣、古街石板路诉说着往昔的辉煌。红军长征途经此地，古老的城池见证了这段红色历史，历史与革命在此交汇。',s:'#hall-8',n:'故城遗址'},
+  {k:['锦城','温泉','宿营','休养'],a:'<b>锦城温泉</b>是城口镇天然温泉资源。1934年红军长征途经城口休整时，曾在此宿营。温泉为长途跋涉的红军战士提供了难得的休养条件，是红军与城口人民鱼水情深的见证。',s:'#map-section',n:'数字地图'},
+  {k:['大皇楼','盐铺','盐街','商贸','盐业'],a:'<b>大皇楼</b>位于老盐街，原为盐铺。城口镇历史上是粤湘通衢的商贸重镇，盐业贸易繁荣。1929年红五军也曾在此采购物资。红军长征途经时，盐铺为红军提供了物资补给，也是城口商贸文化的重要见证。',s:'#map-section',n:'数字地图'},
+  {k:['元帅','八位','几位','将帅'],a:'共有<b>八位元帅</b>曾到访城口，包括朱德、彭德怀、林彪、刘伯承、贺龙、罗荣桓、聂荣臻、叶剑英。这在中国革命史上是极为罕见的，充分说明城口在红军长征中的重要战略地位。',s:'#timeline',n:'历史时间轴'},
+  {k:['长征','1934','封锁线','第二道'],a:'1934年11月，中央红军进行战略转移（长征），在城口突破国民党<b>第二道封锁线</b>。城口位于广东省韶关市仁化县，是粤北重镇。红军在此休整七天，补充物资，留下了丰富的红色遗迹。城口因此被称为"长征路上的隐秘坐标"。',s:'#timeline',n:'历史时间轴'},
+  {k:['红军街','街道','老街','600','商铺'],a:'<b>城口红军街</b>全长约600米，沿街有130多家商铺。这条老街保存了大量红色革命遗迹，分布有14处革命遗址。街道至今仍保留着当年的风貌，是城口红色文化的核心区域。',s:'#hall-2',n:'红军街'},
+  {k:['地图','遗址','几处','多少','分布','14','19'],a:'城口镇共有<b>19处红色遗迹</b>，其中红军街核心区域分布<b>14处革命遗址</b>，分为三个历史时期：<br>• <b>早期革命（1926-1932）</b>：第二区苏维埃政府、将军桥、古寨城红五军宿营地<br>• <b>红军长征（1934）</b>：广兴栈、理发店、打铁铺、红一军团指挥部、杨茂利店等11处<br>• <b>战役纪念</b>：铜鼓岭阻击战遗址（92位烈士）<br>另有粤北纪念馆、谭甫仁将军墓等纪念场所。',s:'#map-section',n:'数字地图'},
+  {k:['红五军','彭德怀','滕代远','1929','五军'],a:'<b>1929年</b>，彭德怀、滕代远率<b>红五军</b>转战粤北途经城口，这是红军主力首次到达城口。红五军在<b>古寨城宿营</b>，在<b>老盐街盐铺采购物资</b>，在<b>三角坪惩治恶霸</b>，开展群众工作，宣传革命思想，播撒红色火种。这比1934年中央红军长征早了5年。',s:'#timeline',n:'历史时间轴'},
+  {k:['苏维埃','第二区','1926','最早','政权'],a:'<b>第二区苏维埃政府</b>成立于<b>1926年</b>，位于城群村紫震街，是城口最早的红色政权组织。它见证了大革命时期城口人民的革命斗争，是城口红色历史的起点，比红军长征经过城口早了整整8年。',s:'#timeline',n:'历史时间轴'},
+  {k:['将军桥','朱德','陈毅','1927','南昌起义'],a:'<b>城口将军桥</b>位于城群村大河背水。<b>1927年</b>，朱德、陈毅率南昌起义军余部南下途经城口，在这座桥上留下了革命足迹。为纪念这段历史，当地群众将此桥称为<b>将军桥</b>。这是朱德元帅与城口的最早交集。',s:'#map-section',n:'数字地图'},
+  {k:['红一军团','指挥部','祖堂坪','军团'],a:'<b>红一军团指挥部</b>遗址位于镇区祖堂坪。1934年11月红军长征突破第二道封锁线时，红一军团指挥部设在此处。这里是红军指挥作战、部署休整的核心场所，见证了长征路上的重要决策。',s:'#map-section',n:'数字地图'},
+  {k:['杨茂利','筹款','筹粮','物资','捐款'],a:'<b>杨茂利店</b>位于正龙街30号，是1934年红军长征途经城口时的<b>筹款处</b>。红军在此向开明绅士和商人筹粮筹款，补充军需物资。城口人民大力支持红军，为长征胜利贡献了力量，体现了军民鱼水情深。',s:'#map-section',n:'数字地图'},
+  {k:['粤北纪念馆','纪念馆','2017','博物馆'],a:'<b>红军长征粤北纪念馆</b>位于城口镇，与红军街隔河相望，是<b>广东省唯一以红军长征为主题</b>的纪念馆。2017年奠基，建筑面积5583㎡。馆内展示红军长征途经粤北的光辉历史，是重要的爱国主义教育基地。',s:'#map-section',n:'数字地图'},
+  {k:['几个时期','三个时期','历史时期','阶段'],a:'城口的红色历史跨越<b>三个重要时期</b>：<br>① <b>早期革命时期（1926-1932）</b>：苏维埃政府成立、朱德陈毅途经、红五军转战、城口特支成立<br>② <b>红军长征时期（1934）</b>：突破第二道封锁线、七天休整、铜鼓岭阻击战<br>③ <b>传承发展时期（至今）</b>：谭甫仁将军墓迁回、粤北纪念馆建成、红色遗迹数字化保护',s:'#timeline',n:'历史时间轴'}
 ];
 
 // 智能匹配
@@ -1828,9 +1902,21 @@ function matchKB(q){
     }
     if(score>bestScore){bestScore=score;best=entry;}
   }
-  if(best&&bestScore>0)return best.a;
-  // 默认回复
+  if(best&&bestScore>0)return best;
+  return null;
+}
+function kbFallbackMsg(){
   return '知识库里暂时没有找到这个问题的答案。可以试试问我：<br>• "红五军什么时候到的城口？"<br>• "城口最早的红色政权是什么？"<br>• "将军桥的来历"<br>• "有几处革命遗址？"<br>• "三个历史时期"<br>• "铜鼓岭战役牺牲了多少人？"';
+}
+function citeHTML(entry){
+  return '<div class="ai-cite">依据：本站「'+entry.n+'」展区资料 · <button onclick="jumpToHall(\''+entry.s.slice(1)+'\')">查看相关展区 →</button></div>';
+}
+function jumpToHall(id){
+  aiPanel.classList.remove('show');
+  var el=document.getElementById(id);
+  if(!el)return;
+  var y=el.getBoundingClientRect().top+window.pageYOffset-66;
+  window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
 }
 
 function toggleAI(){
@@ -1877,8 +1963,8 @@ function sendAI(){
   showTyping();
   setTimeout(function(){
     hideTyping();
-    var ans=matchKB(q);
-    addBotMsg(ans);
+    var entry=matchKB(q);
+    addBotMsg(entry?(entry.a+citeHTML(entry)):kbFallbackMsg());
   },600+Math.random()*600);
 }
 

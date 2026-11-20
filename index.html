@@ -147,10 +147,9 @@ body.map-modal-open{overflow:hidden}
 .leaflet-popup-content h4{margin:0 0 4px;color:var(--red);font-size:14px}
 .leaflet-popup-content p{margin:2px 0;font-size:12px;color:#666}
 .leaflet-popup-content .popup-tag{display:inline-block;padding:2px 6px;background:var(--red);color:#fff;border-radius:8px;font-size:10px;margin:2px 2px 0 0}
-.map-marker{cursor:pointer;transition:.2s}
-.map-marker:hover{transform:scale(1.15)}
-.map-marker .pulse{animation:mapPulse 2s ease-out infinite;transform-origin:center}
-@keyframes mapPulse{0%{opacity:.8;r:14}100%{opacity:0;r:28}}
+.map-marker{cursor:pointer;transition:opacity .15s}
+.map-marker:hover{opacity:.82}
+.map-marker .pulse{opacity:.2}
 .map-detail{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;padding:24px 20px 16px;transform:translateY(100%);transition:.3s;pointer-events:none}
 .map-detail.show{transform:translateY(0);pointer-events:auto}
 .map-detail h4{font-size:16px;margin-bottom:6px;color:#ffdd55}

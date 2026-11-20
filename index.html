@@ -1315,7 +1315,7 @@ function initLeafletMap(){
   var tileErrors=0,tileLoads=0;
   tiles.on('tileload',function(){
     tileLoads++;
-    if(tileLoads>=2&&!mapTileLoaded){
+    if(tileLoads>=4&&!mapTileLoaded){
       mapTileLoaded=true;
       clearMapTimer();
       setMapLoading(false);

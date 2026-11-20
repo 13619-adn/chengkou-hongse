@@ -551,6 +551,10 @@ function init(){
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
+  if (THREE.ACESFilmicToneMapping !== undefined){
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+  }
   document.getElementById('canvas-container').appendChild(renderer.domElement);
   renderer.domElement.addEventListener('webglcontextlost', function(e){
     e.preventDefault();
@@ -571,13 +575,13 @@ function init(){
   buildMaterials();
 
   /* 灯光 */
-  ambientLight = new THREE.AmbientLight(0xffffff, 0.42);
+  ambientLight = new THREE.AmbientLight(0xffffff, 0.30);
   scene.add(ambientLight);
 
-  hemiLight = new THREE.HemisphereLight(0xbfd4ff, 0x3a3128, 0.62);
+  hemiLight = new THREE.HemisphereLight(0xbfd4ff, 0x3a3128, 0.45);
   scene.add(hemiLight);
 
-  sunLight = new THREE.DirectionalLight(0xfff0d6, 1.45);
+  sunLight = new THREE.DirectionalLight(0xfff0d6, 1.05);
   sunLight.position.set(12, 18, 10);
   sunLight.castShadow = true;
   sunLight.shadow.mapSize.set(2048, 2048);
@@ -590,7 +594,7 @@ function init(){
   sunLight.shadow.bias = -0.0006;
   scene.add(sunLight);
 
-  var fill = new THREE.DirectionalLight(0x8fa8ff, 0.28);
+  var fill = new THREE.DirectionalLight(0x8fa8ff, 0.18);
   fill.position.set(-10, 8, -8);
   scene.add(fill);
 
@@ -642,9 +646,10 @@ function buildPartsPanel(){
 
 function clearHighlight(){
   pickedParts.forEach(function(m){
-    if (m.material && m.material.emissive && m.userData._origEmissive !== undefined){
-      m.material.emissive.setHex(m.userData._origEmissive);
-      m.material.emissiveIntensity = m.userData._origIntensity;
+    if (m.userData._origMat){
+      if (m.material && m.material.dispose) m.material.dispose();
+      m.material = m.userData._origMat;
+      delete m.userData._origMat;
     }
   });
   pickedParts = [];
@@ -655,10 +660,12 @@ function highlightPart(key){
   clearHighlight();
   modelRoot.traverse(function(o){
     if (o.isMesh && o.userData.part === key && o.material && o.material.emissive){
-      o.userData._origEmissive = o.material.emissive.getHex();
-      o.userData._origIntensity = o.material.emissiveIntensity;
-      o.material.emissive.setHex(0xC8102E);
-      o.material.emissiveIntensity = 0.42;
+      var orig = o.material;
+      var clone = orig.clone();
+      clone.emissive.setHex(0xC8102E);
+      clone.emissiveIntensity = 0.42;
+      o.userData._origMat = orig;
+      o.material = clone;
       pickedParts.push(o);
     }
   });

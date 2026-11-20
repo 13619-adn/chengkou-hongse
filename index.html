@@ -470,7 +470,7 @@ body.tour-open .ai-fab,body.tour-open .back-top{opacity:0;pointer-events:none}
     <h2 class="sec-title">数字复原</h2>
     <p class="sec-sub">以现场实拍照片为贴图，按岭南临街商铺形制做示意性三维复原</p>
     <div class="hall-grid">
-      <div class="hall-card" onclick="location.href='3d-guangxingzhan.html'">
+      <div class="hall-card" onclick="location.href='3d-guangxingzhan.html?v=2'">
         <div class="card-banner" style="background:linear-gradient(135deg,#3A2A18,#1A120A)">
           <div class="card-icon">🏯</div>
           <div class="card-num">3D</div>
@@ -1270,14 +1270,20 @@ function setMapLoading(on){
   var el=document.getElementById('mapLoading');
   if(el)el.classList[on?'add':'remove']('show');
 }
-function switchMap(type){
+function hideMapTip(){
+  var tip=document.getElementById('mapOfflineTip');
+  if(tip)tip.classList.remove('show');
+}
+function switchMap(type,fromAuto){
   var real=document.getElementById('realMapWrap');
   var schem=document.getElementById('schematicMapWrap');
   var btns=document.querySelectorAll('.map-switch button');
   if(type==='real'){
+    hideMapTip();
     real.style.display='block';schem.style.display='none';
     btns[0].classList.add('active');btns[1].classList.remove('active');
     initLeafletMap();
+    if(real.style.display==='none')return;
     if(window._leafletMap)setTimeout(function(){window._leafletMap.invalidateSize();},100);
     if(!mapTileLoaded){
       setMapLoading(true);
@@ -1287,13 +1293,14 @@ function switchMap(type){
   }else{
     clearMapTimer();
     setMapLoading(false);
+    if(!fromAuto)hideMapTip();
     real.style.display='none';schem.style.display='block';
     btns[0].classList.remove('active');btns[1].classList.add('active');
   }
 }
 function autoSchematicMap(){
   clearMapTimer();
-  switchMap('schematic');
+  switchMap('schematic',true);
   var tip=document.getElementById('mapOfflineTip');
   if(tip)tip.classList.add('show');
 }
@@ -1305,14 +1312,14 @@ function initLeafletMap(){
   var tiles=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
     maxZoom:19,attribution:'© OpenStreetMap'
   });
-  var tileErrors=0;
+  var tileErrors=0,tileLoads=0;
   tiles.on('tileload',function(){
-    if(!mapTileLoaded){
+    tileLoads++;
+    if(tileLoads>=2&&!mapTileLoaded){
       mapTileLoaded=true;
       clearMapTimer();
       setMapLoading(false);
-      var tip=document.getElementById('mapOfflineTip');
-      if(tip)tip.classList.remove('show');
+      hideMapTip();
     }
   });
   tiles.on('tileerror',function(){
@@ -1696,7 +1703,7 @@ function renderTour(){
   var actions=document.getElementById('tourActions');
   actions.innerHTML='';
   if(step.a==='3d'){
-    actions.innerHTML='<a class="tour-act" href="3d-guangxingzhan.html" onclick="endTour()">进入 3D 复原 →</a>';
+    actions.innerHTML='<a class="tour-act" href="3d-guangxingzhan.html?v=2" onclick="endTour()">进入 3D 复原 →</a>';
   }else if(step.a==='audio'){
     actions.innerHTML='<button class="tour-act" id="tourAudioBtn" onclick="tourToggleAudio()">▶ 播放解说录音</button>'+
       '<button class="tour-act ghost" onclick="tourOpenQA()">打开知识问答</button>'+

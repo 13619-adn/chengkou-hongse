@@ -124,12 +124,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .map-tab:hover{opacity:.8}
 .map-container{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:#f5f0e8}
 .map-svg{width:100%;height:auto;display:block}
-.map-scroll{overflow:hidden;border-radius:var(--radius)}
-@media(max-width:768px){
-  .map-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none}
-  .map-scroll::-webkit-scrollbar{height:0}
-  .map-svg{width:760px;max-width:none}
-}
+.map-scroll{overflow:hidden;border-radius:var(--radius);touch-action:pan-y}
+.map-scroll.modal{position:fixed;inset:0;z-index:1500;overflow:auto;background:rgba(10,8,6,.96);border-radius:0;padding:56px 12px 24px;touch-action:auto;overscroll-behavior:contain}
+.map-scroll.modal .map-svg{width:1400px;max-width:none;border-radius:8px}
+.map-scroll.modal .map-marker{pointer-events:none}
+.map-modal-close,.map-modal-tip{display:none}
+.map-scroll.modal~.map-modal-close{display:flex;position:fixed;top:12px;right:12px;z-index:1501;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.16);border:none;color:#fff;font-size:22px;align-items:center;justify-content:center;cursor:pointer}
+.map-scroll.modal~.map-modal-tip{display:block;position:fixed;top:22px;left:16px;z-index:1501;color:rgba(255,255,255,.72);font-size:12px;letter-spacing:1px}
+body.map-modal-open{overflow:hidden}
+.map-zoom-btn{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;padding:4px 10px;border-radius:12px;cursor:pointer;font-family:inherit}
 #leaflet-map{width:100%;height:450px;border-radius:var(--radius);z-index:1}
 .leaflet-map-wrap{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-top:16px}
 .map-switch{display:flex;gap:8px;margin-bottom:12px}
@@ -152,8 +155,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .map-close:hover{background:rgba(255,255,255,.4)}
 .map-info{padding:12px 16px;background:var(--ink);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:space-between}
 .map-info .hint{opacity:.7}
-.map-hint-mobile{display:none}
-@media(max-width:768px){.map-hint-desktop{display:none}.map-hint-mobile{display:inline}}
 .map-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:16px}
 .map-stat{text-align:center;padding:16px 8px;background:var(--cream);border-radius:var(--radius);border:1px solid rgba(192,33,43,.15)}
 .map-stat .num{font-size:28px;font-weight:800;color:var(--red)}
@@ -1198,6 +1199,8 @@ body.tour-open .ai-fab,body.tour-open .back-top{opacity:0;pointer-events:none}
         <text x="20" y="545" fill="#8A6A4A" font-size="9" opacity=".5">★ 铜鼓岭阻击战遗址距镇区约3公里</text>
       </svg>
       </div>
+      <button class="map-modal-close" onclick="closeMapModal()">×</button>
+      <div class="map-modal-tip">滑动查看全图 · 右上角关闭</div>
 
       <div class="map-detail" id="mapDetail">
         <button class="map-close" onclick="closeMapDetail()">×</button>
@@ -1208,8 +1211,7 @@ body.tour-open .ai-fab,body.tour-open .back-top{opacity:0;pointer-events:none}
 
       <div class="map-info">
         <span>点击地图标记查看详情</span>
-        <span class="hint map-hint-desktop">共10处红色遗迹</span>
-        <span class="hint map-hint-mobile">左右滑动查看全图</span>
+        <button class="map-zoom-btn" onclick="openMapModal()">查看大图</button>
       </div>
     </div>
   </div>
@@ -1387,12 +1389,22 @@ function showMapDetail(id){
 function closeMapDetail(){
   document.getElementById('mapDetail').classList.remove('show');
 }
-// 地图标记触屏支持
-document.querySelectorAll('.map-marker').forEach(function(m){
-  m.addEventListener('touchstart',function(e){
-    e.preventDefault();showMapDetail(this.getAttribute('data-site'));
-  },{passive:false});
-});
+function openMapModal(){
+  var ms=document.querySelector('#schematicMapWrap .map-scroll');
+  ms.classList.add('modal');
+  document.body.classList.add('map-modal-open');
+  requestAnimationFrame(function(){
+    ms.scrollLeft=(ms.scrollWidth-ms.clientWidth)/2;
+    ms.scrollTop=(ms.scrollHeight-ms.clientHeight)/2;
+  });
+}
+function closeMapModal(){
+  var ms=document.querySelector('#schematicMapWrap .map-scroll');
+  ms.classList.remove('modal');
+  document.body.classList.remove('map-modal-open');
+  ms.scrollLeft=0;ms.scrollTop=0;
+}
+// 地图标记点击由 onclick 处理，避免 touchstart 阻断页面滚动
 </script>
 
 <!-- 红色文化知识问答 -->

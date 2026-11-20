@@ -53,9 +53,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .hero-stat .num{font-size:28px;font-weight:800;color:var(--gold)}
 .hero-stat .label{font-size:12px;color:rgba(255,255,255,.6)}
 .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn{padding:12px 28px;border-radius:30px;font-size:15px;font-weight:600;text-decoration:none;transition:.3s;cursor:pointer;border:none}
+.btn{padding:12px 28px;border-radius:30px;font-size:15px;font-weight:600;text-decoration:none;transition:.3s;cursor:pointer;border:none;font-family:inherit}
 .btn-primary{background:var(--gold);color:var(--red-dark)}
 .btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:#fff}
+.hero-tour-tip{margin-top:14px;font-size:12px;color:rgba(255,255,255,.55);letter-spacing:.5px}
 
 /* 展厅概览 */
 #halls{padding:60px 0}
@@ -198,6 +199,39 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .back-top.show{opacity:1;transform:translateY(0)}
 .back-top:active{transform:scale(.9)}
 
+/* 3分钟导览 */
+.tour-panel{position:fixed;left:50%;bottom:0;transform:translate(-50%,110%);width:min(620px,100%);max-height:78vh;display:flex;flex-direction:column;background:#fff;border-radius:18px 18px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.3);z-index:1200;overflow:hidden;transition:transform .35s cubic-bezier(.22,1,.36,1);padding-bottom:env(safe-area-inset-bottom)}
+.tour-panel.show{transform:translate(-50%,0)}
+.tour-head{display:flex;align-items:center;gap:10px;padding:14px 20px;background:linear-gradient(135deg,var(--red-dark),var(--red));color:#fff;flex-shrink:0}
+.tour-kicker{font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.75)}
+.tour-badge{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:12px;background:rgba(255,255,255,.16);color:#FFE8B0}
+.tour-close{background:none;border:none;color:rgba(255,255,255,.7);font-size:22px;line-height:1;cursor:pointer;padding:0 2px 0 6px;font-family:inherit}
+.tour-close:hover{color:#fff}
+.tour-body{padding:18px 20px 6px;overflow-y:auto;flex:1 1 auto;min-height:0}
+.tour-body h3{font-size:19px;font-weight:800;color:var(--ink);line-height:1.45}
+.tour-body p{margin-top:8px;font-size:14px;line-height:1.85;color:var(--text-mid)}
+.tour-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tour-act{display:inline-block;padding:9px 16px;border-radius:20px;border:1.5px solid var(--red);background:var(--red);color:#fff;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:.2s}
+.tour-act:active{transform:scale(.97)}
+.tour-act.ghost{background:#fff;color:var(--red)}
+.tour-audio-state{width:100%;font-size:12px;color:var(--text-light)}
+.tour-foot{display:flex;align-items:center;gap:12px;padding:12px 20px 16px;flex-shrink:0}
+.tour-dots{display:flex;align-items:center;gap:5px;flex:1}
+.tour-dots i{width:7px;height:7px;border-radius:50%;background:#e2ddd4;cursor:pointer;transition:.2s}
+.tour-dots i.on{width:18px;border-radius:4px;background:var(--red)}
+.tour-btns{display:flex;gap:8px;flex-shrink:0}
+.tour-btns button{padding:9px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:var(--text-mid);font-size:13px;cursor:pointer;font-family:inherit;transition:.2s}
+.tour-btns button:disabled{opacity:.35;cursor:default}
+.tour-btns button.tour-next{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
+body.tour-open .audio-player{transform:translateY(110%)}
+body.tour-open .ai-fab,body.tour-open .back-top{opacity:0;pointer-events:none}
+@media(max-width:480px){
+  .tour-body{padding:14px 16px 4px}
+  .tour-body h3{font-size:17px}
+  .tour-body p{font-size:13px;line-height:1.8}
+  .tour-foot{padding:10px 16px 14px}
+}
+
 /* 阅读进度条 */
 .read-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--red),var(--gold));z-index:101;width:0%;transition:.1s}
 
@@ -218,10 +252,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .fade-up{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
 .fade-up.in-view{opacity:1;transform:translateY(0)}
 
-/* AI 问答助手 */
+/* 红色文化知识问答 */
 .ai-fab{position:fixed;bottom:80px;right:72px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--red),#8B2020);color:#fff;border:none;font-size:22px;cursor:pointer;z-index:998;box-shadow:0 4px 20px rgba(192,33,43,.5);display:flex;align-items:center;justify-content:center;transition:.3s}
 .ai-fab:active{transform:scale(.9)}
-.ai-fab .ai-dot{position:absolute;top:2px;right:2px;width:10px;height:10px;background:#0f0;border-radius:50%;border:2px solid var(--red)}
 .ai-panel{position:fixed;bottom:0;right:0;width:380px;max-width:100%;height:520px;max-height:85vh;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -4px 40px rgba(0,0,0,.15);z-index:1001;display:flex;flex-direction:column;transform:translateX(100%);transition:.3s;overflow:hidden}
 .ai-panel.show{transform:translateX(0)}
 .ai-panel-head{background:linear-gradient(135deg,var(--red-dark),var(--red));color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
@@ -273,8 +306,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
     <div class="logo"><div class="icon">★</div><span>城口红迹</span></div>
     <ul class="nav-links" id="navLinks">
       <li><a href="#hero" class="active">首页</a></li>
+      <li><a href="javascript:void(0)" onclick="startTour()">导览</a></li>
       <li><a href="#halls">展厅</a></li>
-      <li><a href="#digital">数字复现</a></li>
+      <li><a href="#digital">数字复原</a></li>
       <li><a href="#timeline">时间轴</a></li>
       <li><a href="#map-section">地图</a></li>
       <li><a href="#about">关于</a></li>
@@ -299,9 +333,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
       <div class="hero-stat"><div class="num">600m</div><div class="label">老街长</div></div>
     </div>
     <div class="hero-btns">
-      <a href="#halls" class="btn btn-primary">进入展厅</a>
+      <button class="btn btn-primary" onclick="startTour()">▶ 3分钟导览</button>
+      <a href="#halls" class="btn btn-outline">进入展厅</a>
       <a href="#map-section" class="btn btn-outline">查看地图</a>
     </div>
+    <p class="hero-tour-tip">第一次来？跟着导览走，约3分钟看完城口红色记忆</p>
   </div>
 </section>
 
@@ -419,8 +455,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 <section id="digital">
   <div class="container">
     <span class="sec-tag">DIGITAL RESTORATION</span>
-    <h2 class="sec-title">数字复现</h2>
-    <p class="sec-sub">用三维技术，让九十年前的街巷重新出现在眼前</p>
+    <h2 class="sec-title">数字复原</h2>
+    <p class="sec-sub">以现场实拍照片为贴图，按岭南临街商铺形制做示意性三维复原</p>
     <div class="hall-grid">
       <div class="hall-card" onclick="location.href='3d-guangxingzhan.html'">
         <div class="card-banner" style="background:linear-gradient(135deg,#3A2A18,#1A120A)">
@@ -430,7 +466,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
         <div class="card-body">
           <h3>广兴栈 · 三维形制复原</h3>
           <div class="meta">实拍贴图 · 可旋转 · 构件可点击</div>
-          <p>立面材质取自现场实拍照片，按岭南临街商铺形制复原：木板拼墙、木排门、挑檐、小青瓦屋顶，11 类构件逐件可点开查看说明。</p>
+          <p>立面材质取自现场实拍照片，按岭南临街商铺形制搭建：木板拼墙、木排门、挑檐、小青瓦屋顶，11 类构件逐件可点开查看说明。</p>
+          <div class="meta" style="color:#b07d2b">示意性复原 · 非测绘扫描 · 非完整实景重建</div>
           <div class="card-more">进入 3D →</div>
         </div>
       </div>
@@ -1337,18 +1374,17 @@ document.querySelectorAll('.map-marker').forEach(function(m){
 });
 </script>
 
-<!-- AI 问答助手 -->
-<button class="ai-fab" id="aiFab" onclick="toggleAI()">
-  <span>🤖</span>
-  <span class="ai-dot"></span>
+<!-- 红色文化知识问答 -->
+<button class="ai-fab" id="aiFab" onclick="toggleAI()" aria-label="打开红色文化知识问答">
+  <span>📖</span>
 </button>
 <div class="ai-panel" id="aiPanel">
   <div class="ai-panel-head">
     <div style="display:flex;align-items:center;gap:10px">
-      <div class="ai-h-avatar">🤖</div>
+      <div class="ai-h-avatar">📖</div>
       <div>
-        <div class="ai-h-title">红色文化AI助手</div>
-        <div class="ai-h-sub">城口红军街智能问答 · 随时提问</div>
+        <div class="ai-h-title">红色文化知识问答</div>
+        <div class="ai-h-sub">本站内置知识库 · 无需联网</div>
       </div>
     </div>
     <button class="ai-close" onclick="toggleAI()">×</button>
@@ -1402,6 +1438,27 @@ document.querySelectorAll('.map-marker').forEach(function(m){
   <source src="narration.mp3" type="audio/mpeg">
   当前浏览器不支持音频播放，请使用新版 Safari 或 Chrome。
 </audio>
+
+<!-- 3分钟导览 -->
+<div class="tour-panel" id="tourPanel" role="dialog" aria-label="3分钟导览">
+  <div class="tour-head">
+    <span class="tour-kicker">3 MINUTES TOUR</span>
+    <span class="tour-badge" id="tourBadge">第 1 / 7 站</span>
+    <button class="tour-close" onclick="endTour()" aria-label="结束导览">×</button>
+  </div>
+  <div class="tour-body">
+    <h3 id="tourTitle"></h3>
+    <p id="tourText"></p>
+    <div class="tour-actions" id="tourActions"></div>
+  </div>
+  <div class="tour-foot">
+    <div class="tour-dots" id="tourDots"></div>
+    <div class="tour-btns">
+      <button id="tourPrev" onclick="prevTour()">上一站</button>
+      <button id="tourNext" class="tour-next" onclick="nextTour()">下一站</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // 音频播放器
@@ -1494,6 +1551,107 @@ audioEl.addEventListener('ended',function(){
   barFill.style.width='0%';
   curTime.textContent='0:00';
   setAudioInfo('播放完毕 · 点击重新收听');
+});
+</script>
+
+<script>
+/* ===== 3分钟导览 ===== */
+var TOUR_STEPS=[
+  {t:'1934年11月，红军为什么来到城口',s:'#hero',
+   d:'中央红军突破国民党第二道封锁线后进入粤北城口，在红军街休整七天。八位元帅到访，毛泽东借宿广兴栈。这条600米老街，是长征路上容易被忽略的一站。'},
+  {t:'一条街，十四处遗址',s:'#map-section',
+   d:'城口镇现有19处红色遗迹，红军街核心区集中了14处，时间从1926年的第二区苏维埃政府延续到1934年的长征休整。地图上每个标记都可以点开查看详情。'},
+  {t:'铜鼓岭：92位烈士的阻击战',s:'#hall-1',
+   d:'为掩护主力转移，红军在铜鼓岭高地阻击追兵，92位战士壮烈牺牲。今天这里建有红军烈士纪念园，是城口红色记忆中最沉重的一页。'},
+  {t:'广兴栈：毛泽东住过的地方',s:'#hall-5',
+   d:'广兴栈位于正龙街，临街而设。1934年11月红军休整期间，毛泽东在此居住办公。现场照片中可以看清木板立面、木排门和「廣興棧」原匾。'},
+  {t:'胜一理发店：潜伏四年的联络站',s:'#hall-6',
+   d:'1930年10月，中共城口特别支部在胜一理发店设立秘密交通联络站。14名党员以理发、打铁等职业为掩护，潜伏四年，成为红军途经城口时的重要内应。'},
+  {t:'走近广兴栈的三维复原',s:'#digital',a:'3d',
+   d:'这个三维复原以现场实拍照片为贴图，按岭南临街商铺的形制搭建，可旋转、可点击11类构件。它是示意性的形制复原，不是测绘扫描，也不是完整实景重建。'},
+  {t:'听讲解，再自己提问',s:'#audioPlayer',a:'audio',
+   d:'解说录音全长约28分钟，可以边逛边听。看完之后，还可以打开红色知识问答，用本站内置知识库核对时间、人物和遗址信息。'}
+];
+
+var tourIndex=0;
+var tourPanel=document.getElementById('tourPanel');
+
+function startTour(){
+  tourIndex=0;
+  if(document.getElementById('aiPanel').classList.contains('show'))toggleAI();
+  document.body.classList.add('tour-open');
+  tourPanel.classList.add('show');
+  renderTour();
+}
+function endTour(){
+  tourPanel.classList.remove('show');
+  document.body.classList.remove('tour-open');
+}
+function prevTour(){
+  if(tourIndex>0){tourIndex--;renderTour();}
+}
+function nextTour(){
+  if(tourIndex<TOUR_STEPS.length-1){tourIndex++;renderTour();}
+  else{endTour();}
+}
+function goTourStep(i){
+  tourIndex=i;renderTour();
+}
+function renderTour(){
+  var step=TOUR_STEPS[tourIndex];
+  document.getElementById('tourBadge').textContent='第 '+(tourIndex+1)+' / '+TOUR_STEPS.length+' 站';
+  document.getElementById('tourTitle').textContent=step.t;
+  document.getElementById('tourText').textContent=step.d;
+  var actions=document.getElementById('tourActions');
+  actions.innerHTML='';
+  if(step.a==='3d'){
+    actions.innerHTML='<a class="tour-act" href="3d-guangxingzhan.html" onclick="endTour()">进入 3D 复原 →</a>';
+  }else if(step.a==='audio'){
+    actions.innerHTML='<button class="tour-act" id="tourAudioBtn" onclick="tourToggleAudio()">▶ 播放解说录音</button>'+
+      '<button class="tour-act ghost" onclick="tourOpenQA()">打开知识问答</button>'+
+      '<div class="tour-audio-state" id="tourAudioState"></div>';
+    refreshTourAudio();
+  }
+  var dots='';
+  for(var i=0;i<TOUR_STEPS.length;i++){
+    dots+='<i class="'+(i===tourIndex?'on':'')+'" onclick="goTourStep('+i+')"></i>';
+  }
+  document.getElementById('tourDots').innerHTML=dots;
+  document.getElementById('tourPrev').disabled=(tourIndex===0);
+  document.getElementById('tourNext').textContent=(tourIndex===TOUR_STEPS.length-1)?'结束导览':'下一站';
+  if(step.s!=='#audioPlayer'){
+    var target=document.querySelector(step.s);
+    if(target){
+      var y=target.getBoundingClientRect().top+window.pageYOffset-70;
+      window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+    }
+  }
+}
+function tourToggleAudio(){
+  toggleAudio();
+  setTimeout(refreshTourAudio,120);
+}
+function tourOpenQA(){
+  endTour();
+  if(!document.getElementById('aiPanel').classList.contains('show'))toggleAI();
+}
+function refreshTourAudio(){
+  var btn=document.getElementById('tourAudioBtn');
+  var st=document.getElementById('tourAudioState');
+  if(!btn)return;
+  btn.textContent=audioEl.paused?'▶ 播放解说录音':'⏸ 暂停录音';
+  if(st){
+    st.textContent=(audioEl.paused?'录音未播放':'正在播放')+' · '+
+      fmtTime(audioEl.currentTime)+' / '+fmtTime(audioEl.duration);
+  }
+}
+audioEl.addEventListener('play',refreshTourAudio);
+audioEl.addEventListener('pause',refreshTourAudio);
+audioEl.addEventListener('timeupdate',function(){
+  if(document.getElementById('tourAudioBtn'))refreshTourAudio();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&tourPanel.classList.contains('show'))endTour();
 });
 </script>
 
@@ -1626,7 +1784,7 @@ animTargets.forEach(function(el){ animObserver.observe(el); });
 </script>
 
 <script>
-/* ===== 5. AI 红色知识问答助手 ===== */
+/* ===== 5. 红色文化知识问答 ===== */
 var aiPanel=document.getElementById('aiPanel');
 var aiMsgs=document.getElementById('aiMsgs');
 var aiInput=document.getElementById('aiInput');
@@ -1672,14 +1830,14 @@ function matchKB(q){
   }
   if(best&&bestScore>0)return best.a;
   // 默认回复
-  return '抱歉，我暂时无法回答这个问题。你可以试试问我：<br>• "红五军什么时候到的城口？"<br>• "城口最早的红色政权是什么？"<br>• "将军桥的来历"<br>• "有几处革命遗址？"<br>• "三个历史时期"<br>• "铜鼓岭战役牺牲了多少人？"';
+  return '知识库里暂时没有找到这个问题的答案。可以试试问我：<br>• "红五军什么时候到的城口？"<br>• "城口最早的红色政权是什么？"<br>• "将军桥的来历"<br>• "有几处革命遗址？"<br>• "三个历史时期"<br>• "铜鼓岭战役牺牲了多少人？"';
 }
 
 function toggleAI(){
   aiPanel.classList.toggle('show');
   if(aiPanel.classList.contains('show')&&aiMsgs.children.length===0){
     setTimeout(function(){
-      addBotMsg('你好！我是<b>红色文化AI助手</b> 🤖<br>关于城口红军街的任何问题都可以问我，比如：<br>• 红五军什么时候到的城口？<br>• 城口最早的红色政权是什么？<br>• 将军桥的来历<br>• 有几处革命遗址？<br>• 铜鼓岭战役牺牲了多少人？');
+      addBotMsg('你好！这里是<b>红色文化知识问答</b> 📖<br>答案来自本站内置知识库，无需联网。可以试试：<br>• 红五军什么时候到的城口？<br>• 城口最早的红色政权是什么？<br>• 将军桥的来历<br>• 有几处革命遗址？<br>• 铜鼓岭战役牺牲了多少人？');
     },300);
   }
 }

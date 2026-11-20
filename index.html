@@ -129,6 +129,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,
 .map-switch{display:flex;gap:8px;margin-bottom:12px}
 .map-offline-tip{display:none;margin-bottom:12px;padding:9px 14px;border-radius:8px;background:rgba(192,33,43,.08);border-left:3px solid var(--red);color:#8a4a4a;font-size:12px;line-height:1.6}
 .map-offline-tip.show{display:block}
+.map-loading{position:absolute;inset:0;z-index:5;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font-size:13px;letter-spacing:1px;pointer-events:none}
+.map-loading.show{display:flex}
 .map-switch button{padding:6px 14px;border-radius:16px;border:2px solid var(--red);background:transparent;color:var(--red);font-size:12px;cursor:pointer;font-weight:600;transition:.2s}
 .map-switch button.active{background:var(--red);color:#fff}
 .leaflet-popup-content h4{margin:0 0 4px;color:var(--red);font-size:14px}
@@ -1045,20 +1047,21 @@ body.tour-open .ai-fab,body.tour-open .back-top{opacity:0;pointer-events:none}
     </div>
 
     <div class="map-switch">
-      <button class="active" onclick="switchMap('real')">真实地图</button>
-      <button onclick="switchMap('schematic')">示意图</button>
+      <button onclick="switchMap('real')">真实地图</button>
+      <button class="active" onclick="switchMap('schematic')">示意图</button>
     </div>
     <div class="map-offline-tip" id="mapOfflineTip">当前网络无法加载在线地图，已自动切换为示意图，遗址信息不受影响。</div>
 
-    <div class="leaflet-map-wrap" id="realMapWrap">
+    <div class="leaflet-map-wrap" id="realMapWrap" style="display:none">
       <div id="leaflet-map"></div>
+      <div class="map-loading" id="mapLoading">正在加载在线地图…</div>
       <div class="map-info">
         <span>点击地图标记查看详情 · 可缩放拖拽</span>
-        <span class="hint">在线地图瓦片</span>
+        <span class="hint">点击后加载在线瓦片</span>
       </div>
     </div>
 
-    <div class="map-container" id="schematicMapWrap" style="margin-top:20px;display:none">
+    <div class="map-container" id="schematicMapWrap" style="margin-top:20px">
       <svg class="map-svg" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -1261,6 +1264,12 @@ document.querySelectorAll('.snap-track').forEach(function(track){
   });
 });
 // 地图切换
+var mapLoadTimer=null,mapTileLoaded=false;
+function clearMapTimer(){if(mapLoadTimer){clearTimeout(mapLoadTimer);mapLoadTimer=null;}}
+function setMapLoading(on){
+  var el=document.getElementById('mapLoading');
+  if(el)el.classList[on?'add':'remove']('show');
+}
 function switchMap(type){
   var real=document.getElementById('realMapWrap');
   var schem=document.getElementById('schematicMapWrap');
@@ -1268,15 +1277,22 @@ function switchMap(type){
   if(type==='real'){
     real.style.display='block';schem.style.display='none';
     btns[0].classList.add('active');btns[1].classList.remove('active');
+    initLeafletMap();
     if(window._leafletMap)setTimeout(function(){window._leafletMap.invalidateSize();},100);
+    if(!mapTileLoaded){
+      setMapLoading(true);
+      clearMapTimer();
+      mapLoadTimer=setTimeout(function(){if(!mapTileLoaded)autoSchematicMap();},6000);
+    }
   }else{
+    clearMapTimer();
+    setMapLoading(false);
     real.style.display='none';schem.style.display='block';
     btns[0].classList.remove('active');btns[1].classList.add('active');
   }
 }
 function autoSchematicMap(){
-  if(window._mapFallbackDone)return;
-  window._mapFallbackDone=true;
+  clearMapTimer();
   switchMap('schematic');
   var tip=document.getElementById('mapOfflineTip');
   if(tip)tip.classList.add('show');
@@ -1284,11 +1300,21 @@ function autoSchematicMap(){
 // Leaflet 真实地图
 function initLeafletMap(){
   if(window._leafletMap)return;
+  if(typeof L==='undefined'){autoSchematicMap();return;}
   var map=L.map('leaflet-map',{zoomControl:true,scrollWheelZoom:false}).setView([25.3175,113.7375],16);
   var tiles=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
     maxZoom:19,attribution:'© OpenStreetMap'
   });
   var tileErrors=0;
+  tiles.on('tileload',function(){
+    if(!mapTileLoaded){
+      mapTileLoaded=true;
+      clearMapTimer();
+      setMapLoading(false);
+      var tip=document.getElementById('mapOfflineTip');
+      if(tip)tip.classList.remove('show');
+    }
+  });
   tiles.on('tileerror',function(){
     tileErrors++;
     if(tileErrors>=3)autoSchematicMap();
@@ -1358,16 +1384,7 @@ function initLeafletMap(){
   var river=[[25.32100,113.73000],[25.31950,113.73400],[25.31800,113.73700],[25.31650,113.74000],[25.31500,113.74300]];
   L.polyline(river,{color:'#5BA3D0',weight:6,opacity:.5}).addTo(map);
 }
-// 延迟初始化Leaflet（等库加载完）
-setTimeout(function(){
-  if(typeof L!=='undefined'){initLeafletMap();}
-  else{
-    setTimeout(function(){
-      if(typeof L!=='undefined')initLeafletMap();
-      else autoSchematicMap();
-    },800);
-  }
-},300);
+// 在线地图改为点击“真实地图”后按需加载，避免弱网首屏空白
 // 地图交互
 var mapData={
   suweiai:{title:'第二区苏维埃政府遗址',tags:['1926年','最早红色政权'],desc:'1926年在城群村紫震街设立的第二区苏维埃政府，是城口最早的红色政权组织，见证了大革命时期城口人民的革命斗争，是城口红色历史的起点。'},

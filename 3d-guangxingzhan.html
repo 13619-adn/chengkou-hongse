@@ -162,6 +162,7 @@ function canvasTexture(w, h, draw, repeatX, repeatY){
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(repeatX || 1, repeatY || 1);
   t.anisotropy = 4;
+  if (THREE.sRGBEncoding !== undefined) t.encoding = THREE.sRGBEncoding;
   return t;
 }
 

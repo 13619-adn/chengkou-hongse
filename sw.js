@@ -1,10 +1,9 @@
 // Service Worker - 城口红迹数字云展厅 PWA
-var CACHE='chengkou-v8';
+var CACHE='chengkou-v9';
 var ASSETS=[
   'https://13619-adn.github.io/chengkou-hongse/',
   'https://13619-adn.github.io/chengkou-hongse/index.html',
   'https://13619-adn.github.io/chengkou-hongse/manifest.json',
-  'https://13619-adn.github.io/chengkou-hongse/narration_28min.m4a',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js'
@@ -33,6 +32,8 @@ self.addEventListener('activate',function(e){
 // 请求策略
 self.addEventListener('fetch',function(e){
   var req=e.request;
+  // 音频和分段请求交给浏览器原生处理，避免缓存影响播放与拖动
+  if(req.headers.has('range')||/\.(m4a|mp3)(\?|$)/.test(req.url))return;
   // 图片：缓存优先，网络回退
   if(req.url.indexOf('/img/')>=0){
     e.respondWith(

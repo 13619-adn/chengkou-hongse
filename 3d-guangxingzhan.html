@@ -18,6 +18,15 @@
     border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px}
   @keyframes spin{to{transform:rotate(360deg)}}
   .loading span{color:#8b8474;font-size:.82rem;letter-spacing:2px}
+  .loading.fallback-mode{padding:24px;overflow-y:auto}
+  .loading.fallback-mode .spinner,.loading.fallback-mode>span{display:none}
+  .fallback{display:none;width:min(92vw,700px);text-align:center}
+  .loading.fallback-mode .fallback{display:block}
+  .fallback img{display:block;width:100%;max-height:62vh;object-fit:contain;border-radius:14px;
+    border:1px solid rgba(201,169,97,.3);background:#111}
+  .fallback h2{margin-top:16px;color:#C9A961;font-size:1.05rem;letter-spacing:2px}
+  .fallback p{margin:8px auto 0;max-width:520px;color:#a8a294;font-size:.82rem;line-height:1.7}
+  .fallback-actions{display:flex;justify-content:center;gap:10px;margin-top:16px}
 
   .top-bar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:12px;
     padding:14px 16px;background:linear-gradient(180deg,rgba(11,11,18,.95),rgba(11,11,18,0))}
@@ -76,6 +85,15 @@
 <div class="loading" id="loading">
   <div class="spinner"></div>
   <span>正在构建三维模型</span>
+  <div class="fallback" id="fallback">
+    <img src="img/gxz_building.webp" alt="广兴栈现场实拍：木板立面、廣興棧原匾与砖柱">
+    <h2>广兴栈现场实拍</h2>
+    <p id="fallbackText">当前设备无法启动三维模型，已为你切换为现场实拍。</p>
+    <div class="fallback-actions">
+      <button class="back-btn" onclick="location.reload()">重新尝试 3D</button>
+      <button class="back-btn" onclick="goBack()">返回展厅</button>
+    </div>
+  </div>
 </div>
 
 <div class="top-bar">
@@ -530,6 +548,10 @@ function init(){
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
   document.getElementById('canvas-container').appendChild(renderer.domElement);
+  renderer.domElement.addEventListener('webglcontextlost', function(e){
+    e.preventDefault();
+    showFallback('三维显示已中断，已为你切换为现场实拍。可重新尝试或返回展厅。');
+  });
 
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 3.1, 0);
@@ -799,8 +821,16 @@ function animate(){
 }
 
 /* ============================================================
-   加载 Three.js（多 CDN 兜底）
+   加载 Three.js（本地优先，CDN 兜底）
    ============================================================ */
+function showFallback(message){
+  var loading=document.getElementById('loading');
+  loading.classList.remove('hide');
+  loading.classList.add('fallback-mode');
+  document.getElementById('fallbackText').textContent=message||
+    '当前设备无法启动三维模型，已为你切换为现场实拍。';
+}
+
 function loadScript(src){
   return new Promise(function(resolve, reject){
     var s = document.createElement('script');
@@ -815,12 +845,14 @@ function loadScript(src){
   });
 }
 
-var THREE_CDNS = [
+var THREE_SOURCES = [
+  'vendor/three.min.js',
   'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
   'https://unpkg.com/three@0.128.0/build/three.min.js'
 ];
-var ORBIT_CDNS = [
+var ORBIT_SOURCES = [
+  'vendor/OrbitControls.js',
   'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js',
   'https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js'
@@ -828,16 +860,16 @@ var ORBIT_CDNS = [
 
 function loadFirst(urls, i){
   i = i || 0;
-  if (i >= urls.length) return Promise.reject(new Error('all cdn failed'));
+  if (i >= urls.length) return Promise.reject(new Error('all sources failed'));
   return loadScript(urls[i]).catch(function(){ return loadFirst(urls, i + 1); });
 }
 
-loadFirst(THREE_CDNS)
-  .then(function(){ return loadFirst(ORBIT_CDNS); })
+loadFirst(THREE_SOURCES)
+  .then(function(){ return loadFirst(ORBIT_SOURCES); })
   .then(function(){ init(); })
-  .catch(function(){
-    document.querySelector('.loading span').textContent = '三维组件加载失败，请检查网络后刷新';
-    document.querySelector('.spinner').style.borderTopColor = '#C8102E';
+  .catch(function(err){
+    console.error('三维场景初始化失败:',err);
+    showFallback('三维模型暂时无法显示，已为你切换为现场实拍。可重新尝试或返回展厅。');
   });
 </script>
 </body>

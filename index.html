@@ -1395,10 +1395,12 @@ document.querySelectorAll('.map-marker').forEach(function(m){
       <span class="ap-time" id="apTotalTime">--:--</span>
     </div>
   </div>
-  <div class="ap-info">点击播放按钮开始收听 · 可边浏览边听</div>
+  <div class="ap-info" id="apInfo">点击播放按钮开始收听 · 可边浏览边听</div>
 </div>
-<audio id="narrationAudio" preload="none">
+<audio id="narrationAudio" preload="metadata">
   <source src="narration_28min.m4a" type="audio/mp4">
+  <source src="narration.mp3" type="audio/mpeg">
+  当前浏览器不支持音频播放，请使用新版 Safari 或 Chrome。
 </audio>
 
 <script>
@@ -1409,14 +1411,28 @@ var barFill=document.getElementById('apBarFill');
 var curTime=document.getElementById('apCurTime');
 var totalTime=document.getElementById('apTotalTime');
 var player=document.getElementById('audioPlayer');
+var audioInfo=document.getElementById('apInfo');
 
+function setAudioInfo(text){
+  audioInfo.textContent=text;
+}
 function toggleAudio(){
   if(audioEl.paused){
-    audioEl.play();
-    playBtn.textContent='⏸';
+    if(audioEl.error)audioEl.load();
+    setAudioInfo('正在加载录音，请稍候…');
+    var playPromise=audioEl.play();
+    if(playPromise&&playPromise.catch){
+      playPromise.catch(function(err){
+        if(err&&err.name==='AbortError')return;
+        playBtn.textContent='▶';
+        setAudioInfo(err&&err.name==='NotAllowedError'?
+          '浏览器阻止了播放，请再次点击播放按钮':
+          '录音暂时无法播放，请检查网络或更换 Safari、Chrome 浏览器');
+        console.error('录音播放失败:',err);
+      });
+    }
   }else{
     audioEl.pause();
-    playBtn.textContent='▶';
   }
 }
 function toggleAudioPlayer(){
@@ -1429,8 +1445,13 @@ function toggleAudioPlayer(){
   }
 }
 function seekAudio(e){
+  if(!isFinite(audioEl.duration)||audioEl.duration<=0){
+    setAudioInfo('录音尚未加载完成，请稍候');
+    return;
+  }
   var bar=document.getElementById('apBar');
-  var pct=(e.clientX-bar.getBoundingClientRect().left)/bar.offsetWidth;
+  var rect=bar.getBoundingClientRect();
+  var pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
   audioEl.currentTime=pct*audioEl.duration;
 }
 function fmtTime(s){
@@ -1440,7 +1461,7 @@ function fmtTime(s){
   return m+':'+(sec<10?'0'+sec:sec);
 }
 audioEl.addEventListener('timeupdate',function(){
-  if(audioEl.duration){
+  if(isFinite(audioEl.duration)&&audioEl.duration>0){
     var pct=(audioEl.currentTime/audioEl.duration)*100;
     barFill.style.width=pct+'%';
     curTime.textContent=fmtTime(audioEl.currentTime);
@@ -1448,11 +1469,31 @@ audioEl.addEventListener('timeupdate',function(){
 });
 audioEl.addEventListener('loadedmetadata',function(){
   totalTime.textContent=fmtTime(audioEl.duration);
+  if(audioEl.paused&&audioEl.currentTime===0)setAudioInfo('录音已就绪 · 点击播放按钮开始收听');
+});
+audioEl.addEventListener('play',function(){
+  playBtn.textContent='⏸';
+  setAudioInfo('正在播放 · 可边浏览边听');
+});
+audioEl.addEventListener('pause',function(){
+  playBtn.textContent='▶';
+  if(!audioEl.ended)setAudioInfo('已暂停 · 点击继续收听');
+});
+audioEl.addEventListener('waiting',function(){
+  setAudioInfo('正在缓冲，请稍候…');
+});
+audioEl.addEventListener('canplay',function(){
+  if(!audioEl.paused)setAudioInfo('正在播放 · 可边浏览边听');
+});
+audioEl.addEventListener('error',function(){
+  playBtn.textContent='▶';
+  setAudioInfo('录音加载失败，请检查网络后点击播放重试');
 });
 audioEl.addEventListener('ended',function(){
   playBtn.textContent='▶';
   barFill.style.width='0%';
   curTime.textContent='0:00';
+  setAudioInfo('播放完毕 · 点击重新收听');
 });
 </script>
 
